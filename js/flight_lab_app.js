@@ -2162,6 +2162,9 @@
           slot.innerHTML = '';
         }
 
+        const isCPositive = this.rf.c > 0;
+        const tcnShiftDirection = isCPositive ? 'LÊN TRÊN (y tăng)' : 'XUỐNG DƯỚI (y giảm)';
+
         activeTarget.innerHTML = `
           <div class="prompt-card">
             <span class="prompt-badge">BƯỚC 2: THỬ NGHIỆM HỆ SỐ a</span>
@@ -2184,7 +2187,23 @@
 
             <div class="live-observation-pill" id="live-obs-a">
               • Tiệm cận ngang hiện tại: <strong style="color: var(--color-tcn);">$y = ${this.rf.haY.toFixed(2)}$</strong><br>
+              <span style="font-size: 12px; color: var(--text-muted);">
+                (Đang thử trường hợp: <strong>c = ${this.rf.c} ${isCPositive ? '> 0' : '< 0'}</strong>. Khi $a$ tăng, đường TCN dịch <strong>${isCPositive ? 'LÊN TRÊN' : 'XUỐNG DƯỚI'}</strong>)
+              </span><br>
               • Tiệm cận đứng hiện tại: <strong style="color: var(--color-tcd);">$x = ${this.rf.vaX.toFixed(2)}$</strong> (Đứng yên bất biến!)
+            </div>
+          </div>
+
+          <!-- THỬ NGHIỆM ĐẢO DẤU C CHO TCN -->
+          <div style="background: var(--bg-surface-elevated); padding: 12px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 10px;">
+            🔍 <strong>Kiểm chứng quy tắc đảo chiều khi c đổi dấu:</strong>
+            <div style="margin-top: 6px; display: flex; gap: 8px;">
+              <button id="btn-set-c-pos-b" class="btn-action-secondary" style="font-size: 12px; padding: 6px 10px; ${isCPositive ? 'border-color: var(--primary); font-weight:700;' : ''}">
+                1. Thử c = 1 > 0 (Dịch Lên)
+              </button>
+              <button id="btn-set-c-neg-b" class="btn-action-secondary" style="font-size: 12px; padding: 6px 10px; ${!isCPositive ? 'border-color: var(--primary); font-weight:700;' : ''}">
+                2. Thử c = -1 < 0 (Dịch Xuống)
+              </button>
             </div>
           </div>
 
@@ -2209,7 +2228,8 @@
           
           const obsEl = document.getElementById('live-obs-a');
           if (obsEl) {
-            obsEl.innerHTML = `• Tiệm cận ngang hiện tại: <strong style="color: var(--color-tcn);">$y = ${this.rf.haY.toFixed(2)}$</strong><br>• Tiệm cận đứng hiện tại: <strong style="color: var(--color-tcd);">$x = ${this.rf.vaX.toFixed(2)}$</strong> (Đứng yên bất biến!)`;
+            const isPos = this.rf.c > 0;
+            obsEl.innerHTML = `• Tiệm cận ngang hiện tại: <strong style="color: var(--color-tcn);">$y = ${this.rf.haY.toFixed(2)}$</strong><br><span style="font-size: 12px; color: var(--text-muted);">(Đang thử trường hợp: <strong>c = ${this.rf.c} ${isPos ? '> 0' : '< 0'}</strong>. Khi $a$ tăng, đường TCN dịch <strong>${isPos ? 'LÊN TRÊN' : 'XUỐNG DƯỚI'}</strong>)</span><br>• Tiệm cận đứng hiện tại: <strong style="color: var(--color-tcd);">$x = ${this.rf.vaX.toFixed(2)}$</strong> (Đứng yên bất biến!)`;
             this.renderMath(obsEl);
           }
           
@@ -2230,6 +2250,18 @@
         if (btnPlusA) btnPlusA.addEventListener('click', () => {
           const r = document.getElementById('range-a');
           updateA(Math.min(5, Number(r ? r.value : 0) + 0.5));
+        });
+
+        const btnSetCPosB = document.getElementById('btn-set-c-pos-b');
+        if (btnSetCPosB) btnSetCPosB.addEventListener('click', () => {
+          this.rf.c = 1;
+          this.switchStep(2);
+        });
+
+        const btnSetCNegB = document.getElementById('btn-set-c-neg-b');
+        if (btnSetCNegB) btnSetCNegB.addEventListener('click', () => {
+          this.rf.c = -1;
+          this.switchStep(2);
         });
 
         const btnBackB1 = document.getElementById('btn-back-step-b1');
