@@ -634,6 +634,11 @@ body.night-flight .lab-kicker::before {
   height: 100%;
 }
 
+/* Khay thử nghiệm hệ số trên mobile (mặc định ẩn trên màn hình lớn) */
+.mobile-step2-slot {
+  display: none;
+}
+
 /* Nút điều hướng camera nổi góc trên bên phải Canvas */
 .canvas-floating-controls {
   position: absolute;
@@ -2334,4 +2339,425 @@ body.night-flight .notebook-footer-row {
   font-family: var(--font-mono);
   color: var(--primary);
 }
+
+/* =========================================================================
+ * BẢN CHỈ DẪN KÉO ĐỒ THỊ TRÊN MOBILE (ẨN TRÊN PC/TABLET)
+ * ========================================================================= */
+.point-m-mobile-drag-hint {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1.5px dashed rgba(37, 99, 235, 0.35);
+  border-radius: var(--radius-sm);
+  color: var(--primary);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.45;
+  box-sizing: border-box;
+}
+
+body.night-flight .point-m-mobile-drag-hint {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+}
+
+.drag-hint-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  animation: pulseTouchHint 2s infinite ease-in-out;
+}
+
+@keyframes pulseTouchHint {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.1); }
+}
+
+/* =========================================================================
+ * Ô NHẬP LIỆU TOÁN HỌC CÓ NÚT BẬT BÀN PHÍM ẢO
+ * ========================================================================= */
+.input-with-keypad-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-with-keypad-wrap input {
+  width: 100%;
+  padding-right: 36px !important;
+  box-sizing: border-box;
+}
+
+.btn-keypad-trigger {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-card);
+  background: var(--bg-surface-elevated);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+  user-select: none;
+}
+
+.btn-keypad-trigger:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.btn-keypad-trigger:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* =========================================================================
+ * BÀN PHÍM ẢO TOÁN HỌC (VIRTUAL MATH KEYPAD)
+ * ========================================================================= */
+.math-keypad-container {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+}
+
+.math-keypad-container.open {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+}
+
+.math-keypad-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.math-keypad-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-card);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.28);
+  padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.math-keypad-container.open .math-keypad-sheet {
+  transform: translateY(0);
+}
+
+.math-keypad-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.math-keypad-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.math-keypad-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.math-keypad-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.math-keypad-title {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.math-keypad-target-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.math-keypad-display {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 6px;
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-card);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-align: right;
+  min-height: 34px;
+  box-sizing: border-box;
+}
+
+.math-keypad-display-val {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.math-keypad-display-preview {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-tcn);
+  white-space: nowrap;
+}
+
+.math-keypad-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-card);
+  background: var(--bg-surface-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.math-keypad-close-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.math-keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.math-key {
+  height: 44px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-card);
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.12s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.math-key:hover {
+  border-color: var(--primary);
+  background: var(--bg-card);
+}
+
+.math-key:active {
+  transform: scale(0.93);
+  box-shadow: none;
+}
+
+.math-key-op {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+  color: var(--primary);
+  font-size: 18px;
+}
+
+body.night-flight .math-key-op {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+}
+
+.math-key-func {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #dc2626;
+}
+
+body.night-flight .math-key-func {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.math-key-nav {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.25);
+  color: #7c3aed;
+  font-size: 12.5px;
+  font-family: var(--font-sans);
+}
+
+body.night-flight .math-key-nav {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.35);
+  color: #a78bfa;
+}
+
+.math-key-done {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border-color: transparent;
+  color: #ffffff !important;
+  font-size: 13.5px;
+  font-family: var(--font-sans);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+}
+
+.math-key-done:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+
+.math-key-done:active {
+  background: #047857;
+}
+
+/* =========================================================================
+ * BÀN PHÍM ẢO TRÊN PC (DESKTOP VIEWPORT >= 768px)
+ * Hiển thị dạng popover nổi cạnh phép tính / ô nhập liệu, không che mờ đồ thị
+ * ========================================================================= */
+@media screen and (min-width: 768px) {
+  .math-keypad-container {
+    background: transparent !important;
+    justify-content: flex-start !important;
+  }
+
+  .math-keypad-backdrop {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .math-keypad-sheet {
+    position: fixed !important;
+    width: 320px !important;
+    max-width: 320px !important;
+    border-radius: 14px !important;
+    border: 1.5px solid var(--border-card) !important;
+    background: var(--bg-card) !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    transform: none !important;
+    margin: 0 !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+  }
+
+  .night-flight .math-keypad-sheet {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .math-keypad-header {
+    padding-bottom: 6px !important;
+    gap: 6px !important;
+  }
+
+  .math-keypad-title {
+    font-size: 10px !important;
+  }
+
+  .math-keypad-target-label {
+    font-size: 11.5px !important;
+    max-width: 95px !important;
+  }
+
+  .math-keypad-display {
+    padding: 3px 8px !important;
+    min-height: 28px !important;
+    gap: 4px !important;
+  }
+
+  .math-keypad-display-val {
+    font-size: 13.5px !important;
+  }
+
+  .math-keypad-display-preview {
+    font-size: 11px !important;
+  }
+
+  .math-keypad-close-btn {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+  }
+
+  .math-keypad-grid {
+    gap: 5px !important;
+  }
+
+  .math-key {
+    height: 36px !important;
+    font-size: 14.5px !important;
+    border-radius: 8px !important;
+  }
+
+  .math-key-op {
+    font-size: 16px !important;
+  }
+
+  .math-key-nav {
+    font-size: 11.5px !important;
+  }
+
+  .math-key-done {
+    font-size: 12px !important;
+  }
+}
+
+
 

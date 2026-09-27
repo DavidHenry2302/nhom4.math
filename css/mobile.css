@@ -371,6 +371,59 @@
     text-align: center !important;
   }
 
+  /* 5.1 KHU VỰC HỆ SỐ ĐANG THỬ TRÊN MOBILE (NGAY DƯỚI ĐỒ THỊ) */
+  .mobile-step2-slot {
+    display: block !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .mobile-step2-slot .prompt-card {
+    margin-bottom: 8px !important;
+    padding: 10px 12px !important;
+    border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--border-subtle) !important;
+    background: var(--bg-card) !important;
+  }
+
+  .mobile-step2-slot .prompt-badge {
+    font-size: 11px !important;
+  }
+
+  .mobile-step2-slot .prompt-question {
+    font-size: 12.5px !important;
+    line-height: 1.45 !important;
+  }
+
+  .mobile-step2-slot .slider-control-card {
+    margin-bottom: 8px !important;
+    padding: 12px 10px !important;
+    border-radius: var(--radius-sm) !important;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+  }
+
+  .mobile-step2-slot .live-observation-pill {
+    margin-top: 8px !important;
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Khi đang ở Bước 2 trên mobile, ẩn cụm Trục kéo x để tập trung hoàn toàn vào thanh kéo d/a và đồ thị */
+  .graph-card.step2-active .point-m-control-panel {
+    display: none !important;
+  }
+
+  .graph-card.step2-active .graph-toolbar {
+    margin-top: 10px !important;
+  }
+
+  .graph-card.step2-active + .control-card:empty {
+    display: none !important;
+  }
+
   /* 6. BỘ ĐIỀU KHIỂN ĐIỂM M & TRỤC KÉO x */
   .point-m-control-panel {
     padding: 12px 10px !important;
@@ -392,6 +445,20 @@
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
+  }
+
+  /* ẨN TRỤC KÉO x TRÊN MOBILE Ở CÁC PHẦN: KHẢO SÁT, TCĐ, TCN */
+  .asymptote-lab-container[data-activity="A"] .point-m-slider-block,
+  .asymptote-lab-container[data-activity="B"] .point-m-slider-block,
+  .asymptote-lab-container[data-activity="sandbox"] .point-m-slider-block {
+    display: none !important;
+  }
+
+  /* HIỆN DÒNG CHỮ THAY THẾ TRÊN MOBILE */
+  .asymptote-lab-container[data-activity="A"] .point-m-mobile-drag-hint,
+  .asymptote-lab-container[data-activity="B"] .point-m-mobile-drag-hint,
+  .asymptote-lab-container[data-activity="sandbox"] .point-m-mobile-drag-hint {
+    display: flex !important;
   }
 
   .point-m-slider-label {
@@ -1009,4 +1076,40 @@
     gap: 4px !important;
     font-size: 10.5px !important;
   }
+
+  /* 8. BÀN PHÍM ẢO TOÁN HỌC TRÊN MOBILE: DOCK SÁT ĐÁY */
+  .math-keypad-container {
+    justify-content: flex-end !important;
+  }
+
+  .math-keypad-backdrop {
+    background: rgba(15, 23, 42, 0.5) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+  }
+
+  .math-keypad-sheet {
+    position: relative !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 18px 18px 0 0 !important;
+    padding: 10px 12px calc(12px + env(safe-area-inset-bottom, 8px)) !important;
+    margin: 0 auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0 !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .math-keypad-container.open .math-keypad-sheet {
+    transform: translateY(0) !important;
+  }
+
+  .math-key {
+    height: 42px !important;
+    font-size: 15px !important;
+  }
 }
+

@@ -99,29 +99,26 @@ Math_Web/
 └── src/                  # Thư viện mô-đun toán học mở rộng (Model, Limits, Journey)
 ```
 
-### Các Trụ Cột Kỹ Thuật Nổi Bật:
+### Các Công nghệ Nổi Bật:
 * **HTML5 Canvas 2D Engine**: Vẽ đồ thị Hypebol với độ phân giải sub-pixel, tự động phân nhánh đồ thị khi đi qua tiệm cận đứng để tránh hiện tượng nối nét sai giải tích. Hỗ trợ Pan (kéo rê hệ trục) và Zoom (phóng to/thu nhỏ) bằng chuột hoặc chạm đa điểm.
 * **KaTeX Renderer Tốc Độ Cao**: Sử dụng thư viện KaTeX để hiển thị toàn bộ công thức toán học sắc nét. Thời gian render nhanh gấp 10 lần MathJax, hoàn toàn không gây giật lag trình duyệt.
 * **Mô Hình Dữ Liệu Toán Học Chính Xác Tuyệt Đối**: Lớp `RationalFunction` xử lý chuẩn xác từng phép chia, tính định thức $`ad-bc`$, xác định điểm thủng (Removable Discontinuity) khi tử và mẫu có nghiệm chung, nhận diện suy biến $`c=0`$ thành đường thẳng.
 * **Kiến Trúc CSS Thích Ứng (Adaptive CSS Grid)**: Phân tách rõ ràng giữa 3 tập tin CSS (`pc.css`, `tablet.css`, `mobile.css`), đảm bảo không có bất kỳ thành phần nào bị tràn viền (overflow) trên mọi kích thước màn hình từ 320px đến 4K.
-
+* **Hỗ trợ bản phím ảo**: Hỗ trợ sử dụng nhập dữ liệu bằng bàn phím ảo trên PC/MB.
 ---
 
 ## 🤖 5. Ứng Dụng Trí Tuệ Nhân Tạo (AI) Trong Dự Án
 
-Dự án này là minh chứng tiêu biểu cho việc ứng dụng Trí Tuệ Nhân Tạo (Generative AI & LLM) một cách có phương pháp và chiều sâu trong kỹ thuật giáo dục (EdTech):
+Dự án này là minh chứng tiêu biểu cho việc ứng dụng Trí Tuệ Nhân Tạo (Generative AI & LLM) một cách có phương pháp và chiều sâu trong giáo dục (EdTech):
 
 ### 5.1. AI Đóng Vai Trò Gì & Ứng Dụng Vào Mục Đích Gì?
 1. **Thiết Kế Sư Phạm Tương Tác (Pedagogical Scaffolding)**:
    - *Mục đích:* Chuyển đổi một bài giảng toán lý thuyết khô khan thành một chuỗi trải nghiệm khám phá theo mô hình nhận thức **Dự đoán $`\to`$ Thử nghiệm $`\to`$ Quan sát $`\to`$ Tự giải thích**.
    - *Cách thực hiện:* AI được dùng để phân tích những lỗi tư duy phổ biến nhất của học sinh Việt Nam khi học tiệm cận (ví dụ: ngộ nhận cứ cho mẫu bằng 0 là có TCĐ mà quên điều kiện tử khác 0; ngộ nhận đồ thị không bao giờ cắt đường tiệm cận; ngộ nhận bấm máy tính $`x \to \infty`$ bị tràn số máy tính `Math ERROR`). Từ đó, AI thiết kế các kịch bản thử nghiệm để học sinh tự "vấp ngã" và tự sửa sai.
-2. **Sinh Đề Thông Minh & Bẫy Nhận Thức (Smart Item Generation)**:
+2. **Sinh Đề Thông Minh (Smart Item Generation)**:
    - *Mục đích:* Tạo ngân hàng câu hỏi và bài tập thử thách ngẫu nhiên không trùng lặp, đảm bảo tính chuẩn xác toán học.
    - *Cách thực hiện:* AI xây dựng thuật toán sinh hệ số ngẫu nhiên có kiểm soát (Constraint Satisfaction): luôn lọc bỏ các hàm số có nghiệm quá lớn, tự động cân đối tỉ số $`a/c`$ và $`-d/c`$ để điểm đối xứng $`I`$ luôn nằm trong vùng quan sát của đồ thị, và cố tình sinh ra các phương án nhiễu (Distractors) đánh trúng các ngộ nhận toán học.
-3. **Chuẩn Hóa Kỹ Năng Bấm Máy Tính Cầm Tay (Casio Heuristics)**:
-   - *Mục đích:* Cung cấp quy trình bấm máy khoa học, chính xác cho hai dòng máy phổ biến nhất hiện nay.
-   - *Cách thực hiện:* AI được sử dụng để tổng hợp và mô hình hóa thuật toán tính xấp xỉ số học trên Casio fx-580VN X và fx-880BTG. Nhấn mạnh việc thử nghiệm độc lập hai phía $`x_0 - 10^{-6}`$ và $`x_0 + 10^{-6}`$ để học sinh hiểu rằng đây là phép kiểm tra số gần đúng chứ không thay thế hoàn toàn chứng minh giải tích.
-4. **Kiểm Thử Toàn Diện & Rà Soát Lỗ Hổng Bảo Mật (Automated Test & Security Audit)**:
+3. **Kiểm Thử Toàn Diện & Rà Soát Lỗ Hổng Bảo Mật (Automated Test & Security Audit)**:
    - *Mục đích:* Đảm bảo ứng dụng chạy 100% không lỗi trên môi trường web tĩnh.
    - *Cách thực hiện:* AI thiết kế bộ 56 ca kiểm thử tự động, bao quát từ các hàm số chuẩn, hàm có hệ số âm, hàm phân số, đến các trường hợp biên đặc biệt (suy biến, mẫu bằng hằng số, điểm gián đoạn khử được).
 

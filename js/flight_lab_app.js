@@ -10,6 +10,74 @@
   'use strict';
 
   // =========================================================================
+  // TIỆN ÍCH TOÁN HỌC & GIẢI MÃ BIỂU THỨC SỐ HỌC
+  // Hỗ trợ số nguyên, số thực, dấu âm (-), phân số (a/b), dấu căn (√x), vô cực
+  // Không dùng eval() đảm bảo an toàn tuyệt đối 100%
+  // =========================================================================
+  function parseMathExpression(raw) {
+    if (raw === undefined || raw === null) return NaN;
+    if (typeof raw === 'number') return raw;
+    let s = raw.toString().trim().toLowerCase().replace(/\s+/g, '');
+    if (!s) return NaN;
+
+    // Vô cực
+    if (s === '+inf' || s === 'inf' || s === '+∞' || s === '∞' || s === '+\\infty' || s === 'vocuc' || s === 'duongvocuc') return Infinity;
+    if (s === '-inf' || s === '-∞' || s === '-\\infty' || s === '-vocuc' || s === 'amvocuc') return -Infinity;
+
+    // Chuẩn hóa dấu âm unicode và dấu chia
+    s = s.replace(/[\u2212\u2013\u2014]/g, '-').replace(/[\u00F7:]/g, '/');
+
+    // Hàm phụ giải mã đơn thức: số, căn bậc hai, hoặc số thập phân
+    function parseToken(tok) {
+      tok = tok.trim();
+      if (!tok) return NaN;
+      let sign = 1;
+      if (tok.startsWith('-')) {
+        sign = -1;
+        tok = tok.slice(1);
+      } else if (tok.startsWith('+')) {
+        tok = tok.slice(1);
+      }
+      if (tok.startsWith('√')) {
+        const inner = parseFloat(tok.slice(1));
+        if (isNaN(inner) || inner < 0) return NaN;
+        return sign * Math.sqrt(inner);
+      }
+      if (tok.startsWith('sqrt(') && tok.endsWith(')')) {
+        const inner = parseFloat(tok.slice(5, -1));
+        if (isNaN(inner) || inner < 0) return NaN;
+        return sign * Math.sqrt(inner);
+      }
+      const val = parseFloat(tok);
+      return isNaN(val) ? NaN : sign * val;
+    }
+
+    // Biểu thức dạng phân số a / b
+    if (s.includes('/')) {
+      const parts = s.split('/');
+      if (parts.length === 2) {
+        const num = parseToken(parts[0]);
+        const den = parseToken(parts[1]);
+        if (!isNaN(num) && !isNaN(den) && den !== 0) {
+          return num / den;
+        }
+      }
+      return NaN;
+    }
+
+    return parseToken(s);
+  }
+
+  function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // =========================================================================
   // 1. MÔ HÌNH TOÁN HỌC: HÀM PHÂN THỨC BẬC NHẤT TRÊN BẬC NHẤT
   // f(x) = (ax + b) / (cx + d)
   // =========================================================================
@@ -267,12 +335,13 @@
         };
       };
 
-      const isNearPointM = (sx, sy) => {
+      const isNearPointM = (sx, sy, isTouch = false) => {
         if (this.pointX === null) return false;
         const py = this.rf.evaluate(this.pointX);
         if (py === null || !isFinite(py)) return false;
         const pt = this.worldToScreen(this.pointX, py);
-        return Math.hypot(sx - pt.x, sy - pt.y) <= 18;
+        const radius = isTouch ? 36 : 20;
+        return Math.hypot(sx - pt.x, sy - pt.y) <= radius;
       };
 
       // 1. MOUSE DOWN (Chuột trái kéo đồ thị hoặc điểm M)
@@ -362,7 +431,7 @@
           this.panStartX = this.panX;
           this.panStartY = this.panY;
           this.hasMoved = false;
-          this.isDraggingPoint = isNearPointM(sx, sy);
+          this.isDraggingPoint = isNearPointM(sx, sy, true);
           this.isDragging = !this.isDraggingPoint;
         } else if (e.touches.length === 2) {
           this.isDragging = false;
@@ -407,7 +476,17 @@
         }
       }, { passive: false });
 
-      this.canvas.addEventListener('touchend', () => {
+      this.canvas.addEventListener('touchend', (e) => {
+        if (!this.hasMoved && !this.isDraggingPoint && e.changedTouches && e.changedTouches[0]) {
+          const { sx, sy } = getEventPos(e.changedTouches[0]);
+          const rect = this.canvas.getBoundingClientRect();
+          if (sx >= 0 && sx <= rect.width && sy >= 0 && sy <= rect.height) {
+            const wx = this.screenToWorld(sx, sy).x;
+            this.pointX = Math.round(wx * 20) / 20;
+            if (this.onPointMoved) this.onPointMoved(this.pointX);
+            this.render();
+          }
+        }
         this.isDragging = false;
         this.isDraggingPoint = false;
         touchStartDist = 0;
@@ -875,7 +954,7 @@
       if (!root) return;
 
       root.innerHTML = `
-        <div class="asymptote-lab-container">
+        <div class="asymptote-lab-container" data-activity="${this.currentActivity || 'A'}">
           <!-- 1. HEADER CHÍNH -->
           <header class="lab-header">
             <div class="lab-title-group">
@@ -991,6 +1070,9 @@
                 </div>
               </div>
 
+              <!-- KHU VỰC THỬ NGHIỆM HỆ SỐ TRÊN MOBILE (NGAY DƯỚI ĐỒ THỊ) -->
+              <div id="mobile-step2-slot" class="mobile-step2-slot"></div>
+
               <!-- BỘ ĐIỀU KHIỂN ĐIỂM M & TRỤC KÉO x -->
               <div class="point-m-control-panel">
                 <div class="point-m-row-top">
@@ -1006,12 +1088,20 @@
                     </div>
                   </div>
 
+                  <div class="point-m-mobile-drag-hint" role="status">
+                    <span class="drag-hint-icon">👆</span>
+                    <span class="drag-hint-text">Bạn có thể thao tác kéo trên hàm số</span>
+                  </div>
+
                   <div class="point-m-input-block">
                     <label for="global-x-input" style="font-size: 12px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 4px;">
-                      ⌨️ Nhập x tùy ý (số rất lớn, ±∞):
+                      ⌨️ Nhập x tùy ý (số rất lớn, phân số, căn, ±∞):
                     </label>
                     <div class="point-m-input-row" style="display: flex; gap: 6px; align-items: center;">
-                      <input type="text" id="global-x-input" class="global-x-text-field" value="2" placeholder="VD: 1000, 1e6, +inf, -inf...">
+                      <div class="input-with-keypad-wrap" style="flex: 1 1 auto;">
+                        <input type="text" id="global-x-input" class="global-x-text-field math-keypad-input" data-label="Hoành độ x" value="2" placeholder="VD: 1000, 3/2, √4, +inf..." autocomplete="off">
+                        <button type="button" class="btn-keypad-trigger" data-target="global-x-input" title="Mở bàn phím toán học">⌨️</button>
+                      </div>
                       <button id="btn-apply-global-x" class="btn-action-primary" style="width: auto; min-width: 68px; flex: 0 0 auto; padding: 6px 14px; font-size: 12px; white-space: nowrap;">Áp dụng</button>
                     </div>
                   </div>
@@ -1285,6 +1375,16 @@
           this.switchActivity('A');
         }
       });
+
+      // Tự động điều chỉnh vị trí hiển thị thanh kéo hệ số khi xoay màn hình hoặc đổi kích thước
+      window.addEventListener('resize', () => {
+        if (this.currentStep === 2 && (this.currentActivity === 'A' || this.currentActivity === 'B')) {
+          this.renderStepView();
+        }
+      });
+
+      // Gắn sự kiện cho bàn phím ảo toán học
+      this.bindMathKeypadInputs();
     }
 
     switchActivity(act) {
@@ -1313,6 +1413,8 @@
       }
       this.currentActivity = act;
       this.currentStep = 1;
+      const labContainer = document.querySelector('.asymptote-lab-container');
+      if (labContainer) labContainer.dataset.activity = act;
 
       document.querySelectorAll('.activity-tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.act === act);
@@ -1423,6 +1525,15 @@
       const slot = document.getElementById('controlPanelSlot');
       if (!slot) return;
 
+      const mobileStep2Slot = document.getElementById('mobile-step2-slot');
+      if (mobileStep2Slot) mobileStep2Slot.innerHTML = '';
+      const graphCard = document.querySelector('.graph-card');
+      const isMobile = window.innerWidth <= 767;
+      const isStep2 = (this.currentStep === 2 && (this.currentActivity === 'A' || this.currentActivity === 'B'));
+      if (graphCard) {
+        graphCard.classList.toggle('step2-active', isStep2 && isMobile);
+      }
+
       if (this.currentActivity === 'A') {
         this.renderActivityA(slot);
       } else if (this.currentActivity === 'B') {
@@ -1438,6 +1549,10 @@
       }
 
       this.renderMath(slot);
+      if (mobileStep2Slot && isStep2 && isMobile) {
+        this.renderMath(mobileStep2Slot);
+      }
+      this.bindMathKeypadInputs();
     }
 
     randomInt(min, max) {
@@ -1714,8 +1829,14 @@
       } else if (this.currentStep === 2) {
         // BƯỚC 2: THỬ NGHIỆM (CHỈ CHỈNH d, KIỂM CHỨNG CẢ c > 0 VÀ c < 0)
         const isCPositive = (this.rf.c > 0);
+        const isMobile = window.innerWidth <= 767;
+        const mobileSlot = document.getElementById('mobile-step2-slot');
+        const activeTarget = (isMobile && mobileSlot) ? mobileSlot : slot;
+        if (isMobile && mobileSlot) {
+          slot.innerHTML = '';
+        }
 
-        slot.innerHTML = `
+        activeTarget.innerHTML = `
           <div class="prompt-card">
             <span class="prompt-badge">BƯỚC 2: THỬ NGHIỆM HỆ SỐ d</span>
             <div class="prompt-question">
@@ -1744,7 +1865,7 @@
           </div>
 
           <!-- THỬ NGHIỆM ĐẢO DẤU C -->
-          <div style="background: var(--bg-surface-elevated); padding: 12px; border-radius: var(--radius-sm); font-size: 13px;">
+          <div style="background: var(--bg-surface-elevated); padding: 12px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 10px;">
             🔍 <strong>Kiểm chứng quy tắc đảo chiều khi c đổi dấu:</strong>
             <div style="margin-top: 6px; display: flex; gap: 8px;">
               <button id="btn-set-c-pos" class="btn-action-secondary" style="font-size: 12px; padding: 6px 10px; ${isCPositive ? 'border-color: var(--primary); font-weight:700;' : ''}">
@@ -1757,7 +1878,7 @@
           </div>
 
           <div style="display: flex; gap: 10px;">
-            <button id="btn-back-step" class="btn-action-secondary" style="flex: 1;">⬅ Quay lại Dự đoán</button>
+            <button id="btn-back-step" class="btn-action-secondary" style="flex: 1;">⬅ Quay lại</button>
             <button id="btn-goto-step3" class="btn-action-primary" style="flex: 2;">Sang Bước 3: Quan sát Giới hạn ➔</button>
           </div>
         `;
@@ -1769,42 +1890,57 @@
             dVal = dVal >= 0 ? dVal + 1 : dVal - 1;
           }
           this.rf.d = dVal;
-          document.getElementById('range-d').value = dVal;
-          document.getElementById('val-badge-d').textContent = `d = ${this.rf.d}`;
+          const rangeEl = document.getElementById('range-d');
+          if (rangeEl) rangeEl.value = dVal;
+          const badgeEl = document.getElementById('val-badge-d');
+          if (badgeEl) badgeEl.textContent = `d = ${this.rf.d}`;
           
           const obsEl = document.getElementById('live-obs-d');
-          const va = this.rf.vaX;
-          const pos = this.rf.c > 0;
-          obsEl.innerHTML = `Vị trí Tiệm cận đứng hiện tại: <strong style="color: var(--color-tcd);">$x = ${va !== null ? va.toFixed(2) : 'N/A'}$</strong><br><span style="font-size: 12px; color: var(--text-muted);">(Đang thử trường hợp: <strong>c = ${this.rf.c} ${pos ? '> 0' : '< 0'}</strong>. Khi $d$ tăng, đường TCĐ dịch sang <strong>${pos ? 'TRÁI' : 'PHẢI'}</strong>)</span>`;
+          if (obsEl) {
+            const va = this.rf.vaX;
+            const pos = this.rf.c > 0;
+            obsEl.innerHTML = `Vị trí Tiệm cận đứng hiện tại: <strong style="color: var(--color-tcd);">$x = ${va !== null ? va.toFixed(2) : 'N/A'}$</strong><br><span style="font-size: 12px; color: var(--text-muted);">(Đang thử trường hợp: <strong>c = ${this.rf.c} ${pos ? '> 0' : '< 0'}</strong>. Khi $d$ tăng, đường TCĐ dịch sang <strong>${pos ? 'TRÁI' : 'PHẢI'}</strong>)</span>`;
+            this.renderMath(obsEl);
+          }
           
           this.graphEngine.setFunction(this.rf);
           this.updateFormulaText();
-          this.renderMath(obsEl);
         };
 
         const rangeD = document.getElementById('range-d');
-        rangeD.addEventListener('input', (e) => updateD(e.target.value));
+        if (rangeD) rangeD.addEventListener('input', (e) => updateD(e.target.value));
 
-        document.getElementById('btn-minus-d').addEventListener('click', () => {
-          updateD(Math.max(-6, Number(rangeD.value) - 1));
+        const btnMinusD = document.getElementById('btn-minus-d');
+        if (btnMinusD) btnMinusD.addEventListener('click', () => {
+          const r = document.getElementById('range-d');
+          updateD(Math.max(-6, Number(r ? r.value : 0) - 1));
         });
 
-        document.getElementById('btn-plus-d').addEventListener('click', () => {
-          updateD(Math.min(6, Number(rangeD.value) + 1));
+        const btnPlusD = document.getElementById('btn-plus-d');
+        if (btnPlusD) btnPlusD.addEventListener('click', () => {
+          const r = document.getElementById('range-d');
+          updateD(Math.min(6, Number(r ? r.value : 0) + 1));
         });
 
-        document.getElementById('btn-set-c-pos').addEventListener('click', () => {
+        const btnSetCPos = document.getElementById('btn-set-c-pos');
+        if (btnSetCPos) btnSetCPos.addEventListener('click', () => {
           this.rf.c = 1;
           this.switchStep(2);
         });
 
-        document.getElementById('btn-set-c-neg').addEventListener('click', () => {
+        const btnSetCNeg = document.getElementById('btn-set-c-neg');
+        if (btnSetCNeg) btnSetCNeg.addEventListener('click', () => {
           this.rf.c = -1;
           this.switchStep(2);
         });
 
-        document.getElementById('btn-back-step').addEventListener('click', () => this.switchStep(1));
-        document.getElementById('btn-goto-step3').addEventListener('click', () => this.switchStep(3));
+        const btnBackStep = document.getElementById('btn-back-step');
+        if (btnBackStep) btnBackStep.addEventListener('click', () => this.switchStep(1));
+
+        const btnGotoStep3 = document.getElementById('btn-goto-step3');
+        if (btnGotoStep3) btnGotoStep3.addEventListener('click', () => this.switchStep(3));
+
+        this.renderMath(activeTarget);
 
       } else if (this.currentStep === 3) {
         // BƯỚC 3: QUAN SÁT GIỚI HẠN GẦN TCĐ (BẢNG DÃY SỐ CỤ THỂ)
@@ -2019,7 +2155,14 @@
 
       } else if (this.currentStep === 2) {
         // BƯỚC 2: THỬ NGHIỆM a
-        slot.innerHTML = `
+        const isMobile = window.innerWidth <= 767;
+        const mobileSlot = document.getElementById('mobile-step2-slot');
+        const activeTarget = (isMobile && mobileSlot) ? mobileSlot : slot;
+        if (isMobile && mobileSlot) {
+          slot.innerHTML = '';
+        }
+
+        activeTarget.innerHTML = `
           <div class="prompt-card">
             <span class="prompt-badge">BƯỚC 2: THỬ NGHIỆM HỆ SỐ a</span>
             <div class="prompt-question">
@@ -2035,7 +2178,7 @@
 
             <div class="slider-input-group">
               <button class="btn-step-slider" id="btn-minus-a">−</button>
-          <input type="range" class="lab-range-slider" id="range-a" min="-5" max="5" step="0.5" value="${this.rf.a}">
+              <input type="range" class="lab-range-slider" id="range-a" min="-5" max="5" step="0.5" value="${this.rf.a}">
               <button class="btn-step-slider" id="btn-plus-a">+</button>
             </div>
 
@@ -2059,30 +2202,43 @@
             if (aVal > 5) aVal -= 1;
           }
           this.rf.a = aVal;
-          document.getElementById('range-a').value = aVal;
-          document.getElementById('val-badge-a').textContent = `a = ${this.rf.a}`;
+          const rangeEl = document.getElementById('range-a');
+          if (rangeEl) rangeEl.value = aVal;
+          const badgeEl = document.getElementById('val-badge-a');
+          if (badgeEl) badgeEl.textContent = `a = ${this.rf.a}`;
           
           const obsEl = document.getElementById('live-obs-a');
-          obsEl.innerHTML = `• Tiệm cận ngang hiện tại: <strong style="color: var(--color-tcn);">$y = ${this.rf.haY.toFixed(2)}$</strong><br>• Tiệm cận đứng hiện tại: <strong style="color: var(--color-tcd);">$x = ${this.rf.vaX.toFixed(2)}$</strong> (Đứng yên bất biến!)`;
+          if (obsEl) {
+            obsEl.innerHTML = `• Tiệm cận ngang hiện tại: <strong style="color: var(--color-tcn);">$y = ${this.rf.haY.toFixed(2)}$</strong><br>• Tiệm cận đứng hiện tại: <strong style="color: var(--color-tcd);">$x = ${this.rf.vaX.toFixed(2)}$</strong> (Đứng yên bất biến!)`;
+            this.renderMath(obsEl);
+          }
           
           this.graphEngine.setFunction(this.rf);
           this.updateFormulaText();
-          this.renderMath(obsEl);
         };
 
         const rangeA = document.getElementById('range-a');
-        rangeA.addEventListener('input', (e) => updateA(e.target.value));
+        if (rangeA) rangeA.addEventListener('input', (e) => updateA(e.target.value));
 
-        document.getElementById('btn-minus-a').addEventListener('click', () => {
-          updateA(Math.max(-5, Number(rangeA.value) - 0.5));
+        const btnMinusA = document.getElementById('btn-minus-a');
+        if (btnMinusA) btnMinusA.addEventListener('click', () => {
+          const r = document.getElementById('range-a');
+          updateA(Math.max(-5, Number(r ? r.value : 0) - 0.5));
         });
 
-        document.getElementById('btn-plus-a').addEventListener('click', () => {
-          updateA(Math.min(5, Number(rangeA.value) + 0.5));
+        const btnPlusA = document.getElementById('btn-plus-a');
+        if (btnPlusA) btnPlusA.addEventListener('click', () => {
+          const r = document.getElementById('range-a');
+          updateA(Math.min(5, Number(r ? r.value : 0) + 0.5));
         });
 
-        document.getElementById('btn-back-step-b1').addEventListener('click', () => this.switchStep(1));
-        document.getElementById('btn-goto-step-b3').addEventListener('click', () => this.switchStep(3));
+        const btnBackB1 = document.getElementById('btn-back-step-b1');
+        if (btnBackB1) btnBackB1.addEventListener('click', () => this.switchStep(1));
+
+        const btnGotoB3 = document.getElementById('btn-goto-step-b3');
+        if (btnGotoB3) btnGotoB3.addEventListener('click', () => this.switchStep(3));
+
+        this.renderMath(activeTarget);
 
       } else if (this.currentStep === 3) {
         // BƯỚC 3: QUAN SÁT GIỚI HẠN VÔ CỰC (BẢNG DÃY SỐ)
@@ -2200,6 +2356,28 @@
       const numerator = this.formatLinearExpression(cd.a, cd.b);
       const denominator = this.formatLinearExpression(cd.c, cd.d);
 
+      // Danh sách 3 phương pháp cho TCĐ và TCN
+      const vaMethods = [
+        { value: 'den_zero', label: 'Giải phương trình mẫu số: cx + d = 0' },
+        { value: 'num_zero', label: 'Giải phương trình tử số: ax + b = 0' },
+        { value: 'diff', label: 'Lấy tử trừ mẫu' }
+      ];
+
+      const haMethods = [
+        { value: 'ratio_high', label: 'Lấy tỉ số bậc cao nhất: a / c' },
+        { value: 'ratio_const', label: 'Lấy tỉ số số hạng tự do: b / d' },
+        { value: 'sum', label: 'Lấy a + c' }
+      ];
+
+      // Random hóa thứ tự xuất hiện của 3 cách chọn tại các lần khác nhau
+      const shuffledVa = this.shuffleArray(vaMethods);
+      const shuffledHa = this.shuffleArray(haMethods);
+
+      const valVA = this.challengeInputs ? (this.challengeInputs.rawVA || this.challengeInputs.va) : '';
+      const valHA = this.challengeInputs ? (this.challengeInputs.rawHA || this.challengeInputs.ha) : '';
+      const selectedMethodVA = this.challengeInputs ? this.challengeInputs.methodVA : '';
+      const selectedMethodHA = this.challengeInputs ? this.challengeInputs.methodHA : '';
+
       slot.innerHTML = `
         <div class="challenge-card">
           <div class="prompt-card">
@@ -2215,31 +2393,35 @@
 
           <div class="challenge-inputs-row">
             <div class="challenge-input-field">
-              <label style="color: var(--color-tcd);">Tiệm cận đứng (x = ?):</label>
-              <input type="number" id="inp-chall-va" step="0.1" placeholder="Nhập giá trị x..." value="${this.challengeSubmitted && this.challengeInputs ? this.challengeInputs.va : ''}">
+              <label style="color: var(--color-tcd); font-weight: 700;">Tiệm cận đứng (x = ?):</label>
+              <div class="input-with-keypad-wrap">
+                <input type="text" id="inp-chall-va" class="math-keypad-input" data-label="Tiệm cận đứng (x)" placeholder="Nhập giá trị x (ví dụ: -2, 3/2, √4)..." value="${this.escapeHtml(valVA)}" autocomplete="off">
+                <button type="button" class="btn-keypad-trigger" data-target="inp-chall-va" title="Mở bàn phím toán học">⌨️</button>
+              </div>
             </div>
 
             <div class="challenge-input-field">
-              <label style="color: var(--color-tcn);">Tiệm cận ngang (y = ?):</label>
-              <input type="number" id="inp-chall-ha" step="0.1" placeholder="Nhập giá trị y..." value="${this.challengeSubmitted && this.challengeInputs ? this.challengeInputs.ha : ''}">
+              <label style="color: var(--color-tcn); font-weight: 700;">Tiệm cận ngang (y = ?):</label>
+              <div class="input-with-keypad-wrap">
+                <input type="text" id="inp-chall-ha" class="math-keypad-input" data-label="Tiệm cận ngang (y)" placeholder="Nhập giá trị y (ví dụ: 1, -0.5, 3/2)..." value="${this.escapeHtml(valHA)}" autocomplete="off">
+                <button type="button" class="btn-keypad-trigger" data-target="inp-chall-ha" title="Mở bàn phím toán học">⌨️</button>
+              </div>
             </div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label style="font-size: 12.5px; font-weight: 700;">Phương pháp tìm Tiệm cận đứng:</label>
-            <select id="sel-chall-method-va" style="padding: 8px 10px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-card); background: var(--bg-surface); color: var(--text-main); font-size: 13px;">
-              <option value="den_zero">Giải phương trình mẫu số: cx + d = 0</option>
-              <option value="num_zero">Giải phương trình tử số: ax + b = 0</option>
-              <option value="diff">Lấy tử trừ mẫu</option>
+            <select id="sel-chall-method-va" class="challenge-select-field" style="padding: 9px 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-card); background: var(--bg-surface); color: var(--text-main); font-size: 13px;">
+              <option value="" disabled ${!selectedMethodVA ? 'selected' : ''}>-- Chọn phương pháp tìm Tiệm cận đứng --</option>
+              ${shuffledVa.map(m => `<option value="${m.value}" ${selectedMethodVA === m.value ? 'selected' : ''}>${m.label}</option>`).join('')}
             </select>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label style="font-size: 12.5px; font-weight: 700;">Phương pháp tìm Tiệm cận ngang:</label>
-            <select id="sel-chall-method-ha" style="padding: 8px 10px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-card); background: var(--bg-surface); color: var(--text-main); font-size: 13px;">
-              <option value="ratio_high">Lấy tỉ số bậc cao nhất: a / c</option>
-              <option value="ratio_const">Lấy tỉ số số hạng tự do: b / d</option>
-              <option value="sum">Lấy a + c</option>
+            <select id="sel-chall-method-ha" class="challenge-select-field" style="padding: 9px 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-card); background: var(--bg-surface); color: var(--text-main); font-size: 13px;">
+              <option value="" disabled ${!selectedMethodHA ? 'selected' : ''}>-- Chọn phương pháp tìm Tiệm cận ngang --</option>
+              ${shuffledHa.map(m => `<option value="${m.value}" ${selectedMethodHA === m.value ? 'selected' : ''}>${m.label}</option>`).join('')}
             </select>
           </div>
 
@@ -2252,23 +2434,38 @@
       `;
 
       document.getElementById('btn-submit-challenge').addEventListener('click', () => {
-        const userVA = parseFloat(document.getElementById('inp-chall-va').value);
-        const userHA = parseFloat(document.getElementById('inp-chall-ha').value);
+        const rawVA = document.getElementById('inp-chall-va').value.trim();
+        const rawHA = document.getElementById('inp-chall-ha').value.trim();
         const methodVA = document.getElementById('sel-chall-method-va').value;
         const methodHA = document.getElementById('sel-chall-method-ha').value;
 
-        if (isNaN(userVA) || isNaN(userHA)) {
+        if (!rawVA || !rawHA) {
           alert('Vui lòng nhập đầy đủ giá trị dự đoán cho cả TCĐ và TCN!');
           return;
         }
 
-        this.challengeInputs = { va: userVA, ha: userHA };
+        const userVA = this.parseMathExpression(rawVA);
+        const userHA = this.parseMathExpression(rawHA);
+
+        if (isNaN(userVA) || isNaN(userHA)) {
+          alert('Giá trị nhập vào chưa đúng định dạng số học (ví dụ hợp lệ: -2, 3/2, √4, 1.5)!');
+          return;
+        }
+
+        if (!methodVA || !methodHA) {
+          alert('Vui lòng chọn phương pháp tìm cho cả Tiệm cận đứng và Tiệm cận ngang!');
+          return;
+        }
+
+        this.challengeInputs = { va: userVA, ha: userHA, rawVA, rawHA, methodVA, methodHA };
         this.challengeSubmitted = true;
         this.challengePassed = false;
 
         const isVaCorrect = Math.abs(userVA - cd.expectedVA) < 0.05;
         const isHaCorrect = Math.abs(userHA - cd.expectedHA) < 0.05;
-        const isMethodCorrect = (methodVA === 'den_zero' && methodHA === 'ratio_high');
+        const isMethodVaCorrect = (methodVA === 'den_zero');
+        const isMethodHaCorrect = (methodHA === 'ratio_high');
+        const isMethodCorrect = isMethodVaCorrect && isMethodHaCorrect;
 
         const fb = document.getElementById('chall-result-feedback');
 
@@ -2289,9 +2486,10 @@
           this.graphEngine.render();
         } else {
           let err = '';
-          if (!isVaCorrect) err += `• Tiệm cận đứng chưa đúng: giải $${denominator} = 0$ được $x = ${cd.expectedVA}$. Chú ý dấu khi chuyển vế!<br>`;
-          if (!isHaCorrect) err += `• Tiệm cận ngang chưa đúng: $y = \\dfrac{${cd.a}}{${cd.c}} = ${cd.expectedHA}$.<br>`;
-          if (!isMethodCorrect) err += `• Phương pháp giải: TCĐ là nghiệm của mẫu số $=0$; TCN là tỉ số bậc cao nhất $a/c$.<br>`;
+          if (!isVaCorrect) err += `• Tiệm cận đứng chưa đúng: em nhập <strong>x = ${this.escapeHtml(rawVA)}</strong> (${!isNaN(userVA) ? '≈ ' + userVA.toFixed(2) : ''}), giải $${denominator} = 0$ được $x = ${cd.expectedVA}$. Chú ý dấu khi chuyển vế!<br>`;
+          if (!isHaCorrect) err += `• Tiệm cận ngang chưa đúng: em nhập <strong>y = ${this.escapeHtml(rawHA)}</strong> (${!isNaN(userHA) ? '≈ ' + userHA.toFixed(2) : ''}), $y = \\dfrac{${cd.a}}{${cd.c}} = ${cd.expectedHA}$.<br>`;
+          if (!isMethodVaCorrect) err += `• Phương pháp tìm TCĐ chưa chính xác: TCĐ là nghiệm của phương trình mẫu số $= 0$.<br>`;
+          if (!isMethodHaCorrect) err += `• Phương pháp tìm TCN chưa chính xác: TCN là tỉ số bậc cao nhất $a/c$.<br>`;
 
           fb.innerHTML = `
             <div class="prediction-review-banner incorrect">
@@ -2935,10 +3133,10 @@
           <div class="sandbox-formula-reminder">Dạng hàm số: <strong>$f(x) = \\dfrac{ax + b}{cx + d}$</strong></div>
         </div>
         <form id="sandbox-coefficient-form" class="sandbox-coefficient-form">
-          <label>a <input type="number" name="a" step="any" value="${inputValues.a}" placeholder="Nhập a" required></label>
-          <label>b <input type="number" name="b" step="any" value="${inputValues.b}" placeholder="Nhập b" required></label>
-          <label>c <input type="number" name="c" step="any" value="${inputValues.c}" placeholder="Nhập c" required></label>
-          <label>d <input type="number" name="d" step="any" value="${inputValues.d}" placeholder="Nhập d" required></label>
+          <label>a <input type="text" name="a" class="math-keypad-input" data-label="Hệ số a" value="${inputValues.a}" placeholder="Nhập a" autocomplete="off" required></label>
+          <label>b <input type="text" name="b" class="math-keypad-input" data-label="Hệ số b" value="${inputValues.b}" placeholder="Nhập b" autocomplete="off" required></label>
+          <label>c <input type="text" name="c" class="math-keypad-input" data-label="Hệ số c" value="${inputValues.c}" placeholder="Nhập c" autocomplete="off" required></label>
+          <label>d <input type="text" name="d" class="math-keypad-input" data-label="Hệ số d" value="${inputValues.d}" placeholder="Nhập d" autocomplete="off" required></label>
           <button class="btn-action-primary" type="submit">Khảo sát hàm số</button>
         </form>
         ${hasResults ? `
@@ -2993,12 +3191,13 @@
       document.getElementById('sandbox-coefficient-form').addEventListener('submit', event => {
         event.preventDefault();
         const form = event.currentTarget;
-        const values = ['a', 'b', 'c', 'd'].map(key => Number(form.elements[key].value));
+        const rawValues = ['a', 'b', 'c', 'd'].map(key => form.elements[key].value.trim());
+        const values = rawValues.map(raw => this.parseMathExpression(raw));
         if (values.some(value => !Number.isFinite(value))) {
-          alert('Hãy nhập số hợp lệ cho cả bốn hệ số a, b, c, d.');
+          alert('Hãy nhập số hợp lệ cho cả bốn hệ số a, b, c, d (ví dụ: 2, -1, 3/2, √4).');
           return;
         }
-        this.sandboxInputValues = { a: values[0], b: values[1], c: values[2], d: values[3] };
+        this.sandboxInputValues = { a: rawValues[0], b: rawValues[1], c: rawValues[2], d: rawValues[3] };
         this.sandboxSubmitted = true;
         this.rf = new RationalFunction(values[0], values[1], values[2], values[3]);
         this.graphEngine.setFunction(this.rf);
@@ -3036,9 +3235,9 @@
         return;
       }
 
-      let num = parseFloat(s);
+      let num = this.parseMathExpression(s);
       if (isNaN(num)) {
-        alert('Vui lòng nhập một số hợp lệ (ví dụ: 1000, 1e6, -500, +∞, -∞)!');
+        alert('Vui lòng nhập một số hoặc biểu thức hợp lệ (ví dụ: 1000, 3/2, √4, -500, +∞, -∞)!');
         return;
       }
 
@@ -3216,12 +3415,301 @@
 
       this.renderMath(box);
     }
+
+    parseMathExpression(raw) {
+      return parseMathExpression(raw);
+    }
+
+    shuffleArray(arr) {
+      return shuffleArray(arr);
+    }
+
+    // =========================================================================
+    // BÀN PHÍM ẢO TOÁN HỌC (VIRTUAL MATH KEYPAD) CHO THIẾT BỊ DI ĐỘNG & BÀI TẬP INPUT
+    // Hỗ trợ nhập số, dấu âm (-), phân số (/), dấu căn (√), số thập phân (.), đổi dấu (±)
+    // =========================================================================
+    initMathKeypad() {
+      if (document.getElementById('math-keypad-container')) return;
+
+      const keypadContainer = document.createElement('div');
+      keypadContainer.id = 'math-keypad-container';
+      keypadContainer.className = 'math-keypad-container';
+      keypadContainer.setAttribute('aria-hidden', 'true');
+
+      keypadContainer.innerHTML = `
+        <div class="math-keypad-backdrop" id="math-keypad-backdrop"></div>
+        <div class="math-keypad-sheet">
+          <div class="math-keypad-header">
+            <div class="math-keypad-title-wrap">
+              <span class="math-keypad-icon">⌨️</span>
+              <div class="math-keypad-info">
+                <span class="math-keypad-title">BÀN PHÍM TOÁN HỌC</span>
+                <span id="math-keypad-target-label" class="math-keypad-target-label">Đang nhập dữ liệu</span>
+              </div>
+            </div>
+            <div class="math-keypad-display" id="math-keypad-display">
+              <span class="math-keypad-display-val" id="math-keypad-display-val"></span>
+              <span class="math-keypad-display-preview" id="math-keypad-display-preview"></span>
+            </div>
+            <button type="button" class="math-keypad-close-btn" id="btn-close-math-keypad" title="Đóng bàn phím">✕</button>
+          </div>
+          <div class="math-keypad-grid">
+            <button type="button" class="math-key" data-key="7">7</button>
+            <button type="button" class="math-key" data-key="8">8</button>
+            <button type="button" class="math-key" data-key="9">9</button>
+            <button type="button" class="math-key math-key-op" data-key="/" title="Phân số">/</button>
+            <button type="button" class="math-key math-key-func" data-key="backspace" title="Xóa một ký tự">⌫</button>
+
+            <button type="button" class="math-key" data-key="4">4</button>
+            <button type="button" class="math-key" data-key="5">5</button>
+            <button type="button" class="math-key" data-key="6">6</button>
+            <button type="button" class="math-key math-key-op" data-key="-" title="Dấu trừ / âm">−</button>
+            <button type="button" class="math-key math-key-func" data-key="clear" title="Xóa toàn bộ">C</button>
+
+            <button type="button" class="math-key" data-key="1">1</button>
+            <button type="button" class="math-key" data-key="2">2</button>
+            <button type="button" class="math-key" data-key="3">3</button>
+            <button type="button" class="math-key math-key-op" data-key="√" title="Dấu căn bậc hai">√</button>
+            <button type="button" class="math-key" data-key=".">.</button>
+
+            <button type="button" class="math-key math-key-op" data-key="±" title="Đổi dấu âm / dương">±</button>
+            <button type="button" class="math-key" data-key="0">0</button>
+            <button type="button" class="math-key math-key-nav" data-key="next" title="Chuyển sang ô tiếp theo">➔ Tiếp</button>
+            <button type="button" class="math-key math-key-done" data-key="done" title="Xác nhận xong">✓ Xong</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(keypadContainer);
+
+      document.getElementById('math-keypad-backdrop').addEventListener('click', () => this.closeMathKeypad());
+      document.getElementById('btn-close-math-keypad').addEventListener('click', () => this.closeMathKeypad());
+
+      keypadContainer.querySelectorAll('.math-key').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const key = btn.dataset.key;
+          this.handleMathKey(key);
+        });
+      });
+
+      // Trên PC: Tự động bám theo ô nhập khi cuộn trang hoặc đổi kích thước
+      window.addEventListener('resize', () => {
+        if (this.activeMathInput && window.innerWidth > 767) {
+          const sheet = document.querySelector('.math-keypad-sheet');
+          this.positionKeypadOnPC(this.activeMathInput, sheet);
+        } else if (this.activeMathInput) {
+          const sheet = document.querySelector('.math-keypad-sheet');
+          if (sheet) {
+            sheet.style.top = ''; sheet.style.left = ''; sheet.style.right = ''; sheet.style.bottom = '';
+          }
+        }
+      });
+
+      window.addEventListener('scroll', () => {
+        if (this.activeMathInput && window.innerWidth > 767) {
+          const sheet = document.querySelector('.math-keypad-sheet');
+          this.positionKeypadOnPC(this.activeMathInput, sheet);
+        }
+      }, true);
+    }
+
+    openMathKeypad(input, customLabel) {
+      if (!input) return;
+      this.initMathKeypad();
+      this.activeMathInput = input;
+
+      const container = document.getElementById('math-keypad-container');
+      const sheet = container ? container.querySelector('.math-keypad-sheet') : null;
+      if (!container || !sheet) return;
+
+      const labelEl = document.getElementById('math-keypad-target-label');
+      const label = customLabel || input.dataset.label || input.getAttribute('placeholder') || 'Nhập giá trị';
+      if (labelEl) labelEl.textContent = label;
+
+      this.updateKeypadDisplay();
+      container.classList.add('open');
+      container.setAttribute('aria-hidden', 'false');
+
+      // Trên PC: định vị bàn phím cạnh phép tính / ô nhập liệu
+      if (window.innerWidth > 767) {
+        this.positionKeypadOnPC(input, sheet);
+      } else {
+        sheet.style.top = '';
+        sheet.style.left = '';
+        sheet.style.right = '';
+        sheet.style.bottom = '';
+        setTimeout(() => {
+          if (typeof input.scrollIntoView === 'function') {
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+      }
+    }
+
+    positionKeypadOnPC(input, sheet) {
+      if (!input || !sheet) return;
+      const wrap = input.closest('.input-with-keypad-wrap') || input;
+      const rect = wrap.getBoundingClientRect();
+      const sheetWidth = 320;
+      const sheetHeight = 295;
+      const pad = 12;
+
+      let top = rect.top;
+      let left = rect.right + pad;
+
+      // Nếu ô nhập nằm ở nửa phải màn hình (cột bài tập/phép tính), đặt bàn phím ở bên trái ô nhập liệu
+      if (rect.right + sheetWidth + pad > window.innerWidth) {
+        if (rect.left - sheetWidth - pad >= 10) {
+          left = rect.left - sheetWidth - pad;
+        } else {
+          left = Math.max(10, Math.min(window.innerWidth - sheetWidth - 10, rect.left));
+          top = (rect.bottom + sheetHeight + pad <= window.innerHeight)
+            ? rect.bottom + pad
+            : Math.max(10, rect.top - sheetHeight - pad);
+        }
+      }
+
+      // Giới hạn biên màn hình trên/dưới
+      if (top + sheetHeight > window.innerHeight - 10) {
+        top = Math.max(10, window.innerHeight - sheetHeight - 10);
+      }
+      if (top < 10) top = 10;
+
+      sheet.style.position = 'fixed';
+      sheet.style.left = `${Math.round(left)}px`;
+      sheet.style.top = `${Math.round(top)}px`;
+      sheet.style.right = 'auto';
+      sheet.style.bottom = 'auto';
+    }
+
+    closeMathKeypad() {
+      const container = document.getElementById('math-keypad-container');
+      if (container) {
+        container.classList.remove('open');
+        container.setAttribute('aria-hidden', 'true');
+      }
+      this.activeMathInput = null;
+    }
+
+    handleMathKey(key) {
+      if (!this.activeMathInput) return;
+      const input = this.activeMathInput;
+      let val = input.value || '';
+
+      if (key === 'done') {
+        this.closeMathKeypad();
+        if (input.id === 'global-x-input') {
+          const btnApply = document.getElementById('btn-apply-global-x');
+          if (btnApply) btnApply.click();
+        }
+        return;
+      }
+
+      if (key === 'next') {
+        const allInputs = Array.from(document.querySelectorAll('.math-keypad-input'));
+        const idx = allInputs.indexOf(input);
+        if (idx !== -1 && idx < allInputs.length - 1) {
+          this.openMathKeypad(allInputs[idx + 1]);
+        } else {
+          this.closeMathKeypad();
+        }
+        return;
+      }
+
+      if (key === 'clear') {
+        input.value = '';
+      } else if (key === 'backspace') {
+        input.value = val.slice(0, -1);
+      } else if (key === '±') {
+        if (val.startsWith('-')) {
+          input.value = val.slice(1);
+        } else {
+          input.value = '-' + val;
+        }
+      } else if (key === '-') {
+        input.value = val + '-';
+      } else if (key === '/') {
+        if (!val.includes('/')) {
+          input.value = val + '/';
+        }
+      } else if (key === '√') {
+        input.value = val + '√';
+      } else if (key === '.') {
+        input.value = val + '.';
+      } else {
+        input.value = val + key;
+      }
+
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      this.updateKeypadDisplay();
+    }
+
+    updateKeypadDisplay() {
+      const valEl = document.getElementById('math-keypad-display-val');
+      const prevEl = document.getElementById('math-keypad-display-preview');
+      if (!valEl || !prevEl || !this.activeMathInput) return;
+
+      const raw = this.activeMathInput.value || '';
+      valEl.textContent = raw ? raw : '0';
+
+      if (!raw) {
+        prevEl.textContent = '';
+        return;
+      }
+
+      const parsed = parseMathExpression(raw);
+      if (!isNaN(parsed) && isFinite(parsed)) {
+        const fmt = Number.isInteger(parsed) ? parsed.toString() : parsed.toFixed(2).replace(/\.?0+$/, '');
+        if (raw !== fmt) {
+          prevEl.textContent = `≈ ${fmt}`;
+        } else {
+          prevEl.textContent = '';
+        }
+      } else {
+        prevEl.textContent = '';
+      }
+    }
+
+    bindMathKeypadInputs(scope = document) {
+      scope.querySelectorAll('.math-keypad-input').forEach(input => {
+        if (input.dataset.keypadBound === 'true') return;
+        input.dataset.keypadBound = 'true';
+        input.addEventListener('focus', () => {
+          this.openMathKeypad(input);
+        });
+        input.addEventListener('input', () => {
+          if (this.activeMathInput === input) {
+            this.updateKeypadDisplay();
+          }
+        });
+      });
+
+      scope.querySelectorAll('.btn-keypad-trigger').forEach(btn => {
+        if (btn.dataset.keypadBound === 'true') return;
+        btn.dataset.keypadBound = 'true';
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const targetId = btn.dataset.target;
+          const target = document.getElementById(targetId);
+          if (target) {
+            target.focus();
+            this.openMathKeypad(target);
+          }
+        });
+      });
+    }
   }
 
-  // Xuất các lớp ra window để phục vụ kiểm thử tự động (tests.html) và mở rộng
+  // Xuất các lớp và tiện ích ra window để phục vụ kiểm thử tự động (tests.html) và mở rộng
   window.RationalFunction = RationalFunction;
   window.InteractiveGraphEngine = InteractiveGraphEngine;
   window.AsymptoteLabApp = AsymptoteLabApp;
+  window.parseMathExpression = parseMathExpression;
+  window.shuffleArray = shuffleArray;
 
   window.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('app-root')) {

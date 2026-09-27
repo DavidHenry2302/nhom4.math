@@ -365,6 +365,53 @@
     });
 
     // =========================================================================
+    // SUITE 6: PHÂN TÍCH BIỂU THỨC SỐ HỌC (MATH PARSER) & BÀN PHÍM ẢO TOÁN HỌC
+    // =========================================================================
+    describe('6. Tiện Ích Bàn Phím Ảo: Giải Mã Biểu Thức Số Học & Xáo Trộn Random', assert => {
+      const parse = window.parseMathExpression;
+
+      // 6.1 Số nguyên và số thực thông thường
+      assert('Nhận dạng số nguyên dương: 4 => 4', parse('4') === 4);
+      assert('Nhận dạng số nguyên âm: -5 => -5', parse('-5') === -5);
+      assert('Nhận dạng số thực: 2.75 => 2.75', parse('2.75') === 2.75);
+      assert('Nhận dạng số thực âm: -0.5 => -0.5', parse('-0.5') === -0.5);
+
+      // 6.2 Dấu âm unicode và ký hiệu đặc biệt
+      assert('Xử lý dấu trừ unicode (−5) => -5', parse('−5') === -5);
+      assert('Xử lý số có khoảng trắng: " - 7 " => -7', parse(' - 7 ') === -7);
+
+      // 6.3 Phân số (phép chia toán học)
+      assert('Phân số dương: 3/2 => 1.5', Math.abs(parse('3/2') - 1.5) < 1e-9);
+      assert('Phân số âm: -7/3 => -2.333...', Math.abs(parse('-7/3') - (-7/3)) < 1e-9);
+      assert('Phân số có mẫu âm: 5/-2 => -2.5', Math.abs(parse('5/-2') - (-2.5)) < 1e-9);
+      assert('Phân số dạng dấu chia: 8÷4 => 2', parse('8÷4') === 2);
+
+      // 6.4 Dấu căn bậc hai (√x)
+      assert('Căn bậc hai: √4 => 2', parse('√4') === 2);
+      assert('Căn bậc hai: √9 => 3', parse('√9') === 3);
+      assert('Căn bậc hai số âm: -√16 => -4', parse('-√16') === -4);
+      assert('Phân số chứa căn: √25/5 => 1', parse('√25/5') === 1);
+      assert('Dạng sqrt(x): sqrt(49) => 7', parse('sqrt(49)') === 7);
+
+      // 6.5 Vô cực (±inf, ±∞)
+      assert('Dương vô cực: +inf => Infinity', parse('+inf') === Infinity);
+      assert('Dương vô cực: +∞ => Infinity', parse('+∞') === Infinity);
+      assert('Âm vô cực: -inf => -Infinity', parse('-inf') === -Infinity);
+      assert('Âm vô cực: -∞ => -Infinity', parse('-∞') === -Infinity);
+
+      // 6.6 Trường hợp lỗi an toàn (trả về NaN, không crash và không dùng eval)
+      assert('Ký tự bất hợp pháp: abc => NaN', isNaN(parse('abc')));
+      assert('Mẫu số bằng 0: 5/0 => NaN', isNaN(parse('5/0')));
+      assert('Căn số âm: √(-4) => NaN', isNaN(parse('√-4')));
+
+      // 6.7 Xáo trộn mảng (Fisher-Yates Shuffle)
+      const original = ['den_zero', 'num_zero', 'diff'];
+      const shuffled = window.shuffleArray(original);
+      assert('Mảng xáo trộn bảo toàn độ dài 3', shuffled.length === 3);
+      assert('Mảng xáo trộn chứa đủ 3 phần tử ban đầu', original.every(item => shuffled.includes(item)));
+    });
+
+    // =========================================================================
     // TỔNG KẾT
     // =========================================================================
     const summaryDiv = document.getElementById('summary');
