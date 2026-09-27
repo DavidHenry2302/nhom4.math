@@ -1966,9 +1966,9 @@
           <div class="prompt-card">
             <span class="prompt-badge">BƯỚC 3: KHI x TIẾN GẦN ĐƯỜNG TCĐ</span>
             <div class="prompt-question">
-              Hãy cho $x$ tiến gần vị trí đường đứng màu đỏ từ bên trái rồi bên phải. Quan sát: điểm $M$ chạy về đâu và giá trị $f(x)$ lớn dần theo chiều nào?
+              Hãy cho $x$ tiến gần vị trí đường đứng màu đỏ từ bên trái hoặc bên phải qua. Quan sát: điểm $M$ chạy về bên nào và giá trị $f(x)$ lớn dần theo chiều nào?
             </div>
-            <p style="margin:8px 0 0; color:var(--text-muted); font-size:12.5px;">Nói đơn giản, ta chọn các giá trị $x$ ngày càng sát đường đứng rồi xem độ cao $f(x)$ thay đổi ra sao. Bảng dưới đây ghi lại các lần thử đó.</p>
+            <p style="margin:8px 0 0; color:var(--text-muted); font-size:12.5px;">Nói đơn giản, ta chọn các giá trị $x$ ngày càng sát đường tiệm cận đứng rồi xem độ cao $f(x)$ thay đổi ra sao. Bảng dưới đây ghi lại các lần thử đó.</p>
           </div>
 
           <div class="limit-tracker-card">
@@ -2284,7 +2284,7 @@
           <div class="prompt-card">
             <span class="prompt-badge">BƯỚC 3: QUAN SÁT KHI x TIẾN RA VÔ CỰC</span>
             <div class="prompt-question">
-              Quan sát riêng hai dãy: $x=10, 100, 1000$ đi xa về bên phải và $x=-10, -100, -1000$ đi xa về bên trái. Xem các giá trị $f(x)$ tiến gần đến số nào.
+              Quan sát riêng hai dãy: khi cho x tiến về vô cùng bên trái hoặc bên phải. Xem các giá trị $f(x)$ tiến gần đến số nào. Bảng dưới đây ghi nhận sự thay đổi đó.
             </div>
           </div>
 
