@@ -1,0 +1,374 @@
+/**
+ * instructor.css
+ * Styles for Mission Panel, AI Socratic Tutor, 4-Tier Hints, and Prediction Scaffolding.
+ */
+
+.mission-panel-wrapper {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* TOP BADGES */
+.mission-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mission-code-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: bold;
+  background: rgba(56, 189, 248, 0.2);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.status-completed-pill {
+  font-size: 10px;
+  font-weight: bold;
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid #10b981;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: auto;
+}
+
+.mission-title {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+
+/* BRIEFING CARD */
+.card-briefing {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.briefing-story, .briefing-mystery {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.briefing-story p {
+  color: #cbd5e1;
+}
+
+.briefing-mystery p {
+  color: #f1f5f9;
+}
+
+/* AI INSTRUCTOR SPEECH BUBBLE */
+.ai-instructor-box {
+  background: rgba(14, 23, 42, 0.9);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-name {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+}
+
+.ai-speech {
+  font-size: 12px;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+/* MISSION STEPS */
+.mission-step-section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.active-step {
+  opacity: 1;
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.1);
+}
+
+.step-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.prompt-text, .task-desc, .reasoning-prompt {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* PREDICTION OPTIONS */
+.options-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.option-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-card);
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s;
+}
+
+.option-label:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.option-label.selected {
+  border-color: var(--color-primary);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.opt-id {
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.flight-hint-note {
+  font-size: 11px;
+  color: #94a3b8;
+  background: rgba(30, 41, 59, 0.5);
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+
+/* REASONING INPUT */
+.reasoning-input-group {
+  display: flex;
+  gap: 6px;
+}
+
+.input-text {
+  flex: 1;
+  background: #090d16;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+.input-text:focus {
+  border-color: var(--color-primary);
+}
+
+.choice-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.btn-reason-choice {
+  font-size: 11px;
+  padding: 8px 10px;
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-reason-choice:hover {
+  border-color: var(--color-accent);
+  color: #fff;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* FEEDBACK AREA */
+.feedback-area {
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 8px 10px;
+  line-height: 1.4;
+}
+
+.feedback-success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #34d399;
+}
+
+.feedback-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+}
+
+/* 4-TIER HINTS */
+.hints-accordion {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hints-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.btn-hint {
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-hint:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.25);
+}
+
+.btn-hint:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hints-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hint-empty {
+  font-size: 11px;
+  color: #64748b;
+  font-style: italic;
+}
+
+.hint-card {
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.tier-1 { background: rgba(56, 189, 248, 0.1); border-left: 3px solid #38bdf8; }
+.tier-2 { background: rgba(129, 140, 248, 0.1); border-left: 3px solid #818cf8; }
+.tier-3 { background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; }
+.tier-4 { background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; }
+
+.hint-tier-label {
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.tier-1 .hint-tier-label { color: #38bdf8; }
+.tier-2 .hint-tier-label { color: #a5b4fc; }
+.tier-3 .hint-tier-label { color: #fbbf24; }
+.tier-4 .hint-tier-label { color: #34d399; }
+
+.hint-tier-text {
+  color: #cbd5e1;
+}
+
+/* UNLOCKED FORMULA BOX */
+.unlocked-formula-box {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10b981;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+
+.unlocked-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #34d399;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.formula-latex {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* COMPLETION BANNER */
+.completion-banner {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.completion-banner h3 {
+  font-size: 13px;
+  color: var(--color-primary);
+}
+
+.completion-banner p {
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.completion-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}

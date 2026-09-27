@@ -1,0 +1,1012 @@
+/**
+ * =========================================================================
+ * RATIONAL LAB B — DEDICATED MOBILE STYLESHEET (SMARTPHONE VIEWPORTS)
+ * Target: Max-width: 767px (iPhone, Samsung Galaxy, Pixel, etc.)
+ * Mục tiêu: Tối giản, gọn gàng ("nhìn đỡ rối"), điều hướng menu mượt mà,
+ * chạm vuốt dễ dàng, không bị tràn ngang và tiết kiệm tối đa chiều cao.
+ * =========================================================================
+ */
+
+@media screen and (max-width: 767px) {
+  /* 1. RESET TOÀN CỤC & SHELL */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+
+  .asymptote-lab-container {
+    padding: 8px 10px 24px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 2. HEADER TỐI GIẢN CHO MOBILE */
+  .lab-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 10px !important;
+    border-radius: var(--radius-md) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .lab-title-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .lab-icon-badge {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    font-size: 18px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .lab-header-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .lab-kicker {
+    font-size: 9px !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 2px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+  }
+
+  .lab-heading {
+    font-size: 13.5px !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+    font-weight: 800 !important;
+  }
+
+  .lab-tagline {
+    display: none !important; /* Ẩn câu châm ngôn dài trên mobile để tiết kiệm diện tích */
+  }
+
+  /* THANH NÚT HÀNH ĐỘNG HEADER */
+  .lab-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding-top: 6px !important;
+    border-top: 1px solid var(--border-subtle) !important;
+  }
+
+  .btn-header-action {
+    flex: 1 1 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 7px 6px !important;
+    font-size: 11.5px !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Nút theme chỉ cần icon gọn gàng 38px */
+  #btn-theme-toggle {
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    padding: 7px 0 !important;
+  }
+
+  #btn-theme-toggle #theme-text {
+    display: none !important;
+  }
+
+  /* 3. THANH MENU CHỌN HOẠT ĐỘNG RIÊNG CHO MOBILE (DEDICATED MOBILE APP BAR) */
+  .activity-nav-bar {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 6px !important;
+    margin-bottom: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+  }
+
+  .activity-tab-btn {
+    padding: 8px 4px !important;
+    border-radius: 10px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 4px !important;
+    min-height: 38px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    border: 1.5px solid transparent !important;
+    background: var(--bg-surface-elevated) !important;
+    color: var(--text-muted) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .tab-icon {
+    font-size: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .tab-label-pc {
+    display: none !important;
+  }
+
+  .tab-label-mobile {
+    display: inline !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .tab-badge-num {
+    display: none !important;
+  }
+
+  .activity-tab-btn:hover:not(.active) {
+    background: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-card) !important;
+  }
+
+  .activity-tab-btn.active {
+    color: #ffffff !important;
+    border-color: transparent !important;
+    transform: translateY(-1px) !important;
+  }
+
+  .activity-tab-btn[data-act="A"].active {
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+  }
+
+  .activity-tab-btn[data-act="B"].active {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35) !important;
+  }
+
+  .activity-tab-btn[data-act="final"].active {
+    background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%) !important;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35) !important;
+  }
+
+  .activity-tab-btn[data-act="summary"].active {
+    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
+  }
+
+  .activity-tab-btn[data-act="sandbox"].active {
+    background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35) !important;
+  }
+
+  .activity-tab-btn[data-act="review"].active {
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35) !important;
+  }
+
+  /* 4. THANH TIẾN TRÌNH 4 BƯỚC HỌC (STEP TRACKER) GỌN ĐẸP */
+  .step-tracker-bar[style*="display: none"],
+  .step-tracker-bar[style*="display:none"] {
+    display: none !important;
+  }
+
+  .step-tracker-bar {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    padding: 5px 6px !important;
+    margin-bottom: 10px !important;
+    border-radius: var(--radius-sm) !important;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .step-tracker-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    padding: 5px 2px !important;
+    border-radius: 6px !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .step-number-circle {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    font-size: 10.5px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+  }
+
+  .step-text-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+  }
+
+  .step-label-sub {
+    display: none !important; /* Ẩn chữ BƯỚC 1 để thanh ngang không bị chật */
+  }
+
+  .step-label-main {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 5. KHU VỰC BÀN LÀM VIỆC (WORKBENCH GRID) */
+  .lab-workbench-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* KHUNG ĐỒ THỊ TRÊN MOBILE */
+  .graph-card {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 10px !important;
+    border-radius: var(--radius-md) !important;
+    overflow: hidden !important;
+  }
+
+  .graph-top-hud {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    margin-bottom: 8px !important;
+    padding: 2px 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .graph-title-formula {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  #graph-point-badge {
+    font-size: 10.5px !important;
+    color: var(--color-point) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  /* CANVAS CHIỀU CAO VỪA VẶN MÀN HÌNH ĐIỆN THOẠI */
+  .graph-canvas-wrapper {
+    height: 300px !important;
+    min-height: 270px !important;
+    border-radius: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+  }
+
+  /* NÚT CAMERA NỔI GỌN GÀNG */
+  .canvas-floating-controls {
+    top: 6px !important;
+    right: 6px !important;
+    gap: 4px !important;
+    max-width: calc(100% - 12px) !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+  }
+
+  .canvas-floating-controls button {
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+    border-radius: 6px !important;
+  }
+
+  .canvas-pan-hint {
+    bottom: 6px !important;
+    left: 6px !important;
+    right: 6px !important;
+    padding: 4px 8px !important;
+    font-size: 9.5px !important;
+    text-align: center !important;
+  }
+
+  /* 6. BỘ ĐIỀU KHIỂN ĐIỂM M & TRỤC KÉO x */
+  .point-m-control-panel {
+    padding: 12px 10px !important;
+    margin-top: 10px !important;
+    background: var(--bg-card) !important;
+    border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--border-subtle) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .point-m-row-top {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .point-m-slider-label {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .slider-value-badge {
+    font-size: 11.5px !important;
+    padding: 2px 8px !important;
+    border-radius: 6px !important;
+    background: var(--bg-surface-elevated) !important;
+    color: var(--primary) !important;
+  }
+
+  .scrubber-slider-container {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .scrubber-bound-label {
+    font-size: 10.5px !important;
+    color: var(--text-muted) !important;
+    font-family: var(--font-mono) !important;
+    flex: 0 0 auto !important;
+  }
+
+  .scrubber-slider {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 8px !important;
+  }
+
+  .scrubber-slider::-webkit-slider-thumb {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 50% !important;
+    background: var(--primary) !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* HỘP NHẬP x TÙY Ý */
+  .point-m-input-block {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .point-m-input-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+  }
+
+  .point-m-input-row input.global-x-text-field {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    padding: 7px 10px !important;
+    font-size: 12px !important;
+    border: 1px solid var(--border-card) !important;
+    border-radius: 8px !important;
+    background: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .point-m-input-row button#btn-apply-global-x {
+    flex: 0 0 76px !important;
+    width: 76px !important;
+    min-width: 76px !important;
+    padding: 7px 6px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  /* QUICK CHIPS DẠNG CAROUSEL CUỘN NGANG KHÔNG BỊ TRÀN 4 DÒNG */
+  .point-m-quick-chips {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 6px !important;
+    padding: 4px 1px 8px !important;
+    margin-top: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+
+  .point-m-quick-chips::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .point-m-quick-chips > span:first-child {
+    flex: 0 0 auto !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: var(--text-muted) !important;
+    align-self: center !important;
+    padding-right: 2px !important;
+  }
+
+  .chip-btn {
+    flex: 0 0 auto !important;
+    padding: 6px 11px !important;
+    font-size: 11.5px !important;
+    white-space: nowrap !important;
+    border-radius: 999px !important;
+    background: var(--bg-surface-elevated) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: var(--text-main) !important;
+  }
+
+  .chip-btn:active {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+  }
+
+  /* TELEMETRY HUD VIỄN TRẮC THỜI GIAN THỰC */
+  .point-m-telemetry-hud {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 10px !important;
+    margin-top: 8px !important;
+    font-size: 11.5px !important;
+    border-radius: var(--radius-sm) !important;
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-subtle) !important;
+  }
+
+  .point-m-telemetry-hud > div:first-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+
+  .point-m-telemetry-hud > div:first-child > div:first-child {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px 10px !important;
+    font-size: 11px !important;
+  }
+
+  #btn-telemetry-focus-m {
+    font-size: 10.5px !important;
+    padding: 3px 8px !important;
+    border-radius: 6px !important;
+  }
+
+  /* THANH TOOLBAR BẬT/TẮT TCĐ & TCN */
+  .graph-toolbar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
+    border-top: 1px solid var(--border-subtle) !important;
+  }
+
+  .graph-toggle-group {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    gap: 6px !important;
+    box-sizing: border-box !important;
+  }
+
+  .btn-toggle-asymptote {
+    width: 100% !important;
+    min-width: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    padding: 7px 4px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    min-height: 38px !important;
+    white-space: normal !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+  }
+
+  .btn-reset-view {
+    width: 100% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 9px 12px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    min-height: 40px !important;
+  }
+
+  /* 7. KHUNG ĐIỀU KHIỂN BƯỚC HỌC (RIGHT COLUMN) TRÊN MOBILE */
+  .control-card {
+    padding: 14px 12px !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  .prompt-card {
+    padding: 12px 14px !important;
+  }
+
+  .prompt-badge {
+    font-size: 9.5px !important;
+  }
+
+  .prompt-question {
+    font-size: 13.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* LỰA CHỌN DỰ ĐOÁN */
+  .prediction-choices {
+    gap: 8px !important;
+  }
+
+  .prediction-option-label {
+    padding: 11px 12px !important;
+    border-radius: 10px !important;
+    min-height: 48px !important;
+  }
+
+  .prediction-title {
+    font-size: 13px !important;
+  }
+
+  .prediction-desc {
+    font-size: 11px !important;
+  }
+
+  /* Ô LÝ GIẢI */
+  .reason-textarea {
+    font-size: 12.5px !important;
+    padding: 8px 10px !important;
+  }
+
+  /* NÚT HÀNH ĐỘNG CHÍNH */
+  .btn-action-primary:not(#btn-apply-global-x) {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    justify-content: center !important;
+  }
+
+  /* BẢNG GIÁ TRỊ GIỚI HẠN (STEP 3) TRÁNH TRÀN NGANG */
+  .limit-table-wrapper {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border-subtle) !important;
+    margin: 8px 0 !important;
+  }
+
+  .limit-probe-table {
+    min-width: 320px !important;
+    font-size: 11.5px !important;
+  }
+
+  .limit-probe-table th,
+  .limit-probe-table td {
+    padding: 6px 8px !important;
+  }
+
+  /* THANH TRƯỢT HỆ SỐ STEP 2 */
+  .experiment-control-box {
+    padding: 12px !important;
+  }
+
+  .slider-header {
+    font-size: 12px !important;
+  }
+
+  /* 8. CHẾ ĐỘ ÔN TẬP (REVIEW GAME & COMPANION CARD) TRÊN MOBILE */
+  .lab-workbench-grid.review-mode {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .lab-workbench-grid.review-mode .graph-card {
+    display: none !important;
+  }
+
+  .lab-workbench-grid.review-mode .control-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    position: static !important;
+  }
+
+  .review-layout-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .review-game {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .review-companion-card {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px 12px !important;
+    border-radius: var(--radius-md) !important;
+    box-sizing: border-box !important;
+    gap: 12px !important;
+  }
+
+  .companion-header {
+    gap: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .companion-header-icon {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+  }
+
+  .companion-title {
+    font-size: 14.5px !important;
+  }
+
+  .companion-card-box {
+    padding: 10px 12px !important;
+  }
+
+  .casio-card-box {
+    padding: 12px 10px !important;
+  }
+
+  .casio-model-title {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+
+  .casio-step-row {
+    padding: 6px 8px !important;
+    font-size: 11.5px !important;
+  }
+
+  .casio-step-badge {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    font-size: 9.5px !important;
+  }
+
+  .casio-decode-tip {
+    font-size: 10.5px !important;
+    padding: 6px 8px !important;
+  }
+
+  .cheatsheet-rules-list {
+    gap: 8px !important;
+  }
+
+  .cheatsheet-rule-item {
+    padding: 10px 10px !important;
+    gap: 10px !important;
+  }
+
+  .rule-badge-tag {
+    font-size: 10px !important;
+    padding: 3px 6px !important;
+  }
+
+  .rule-body strong {
+    font-size: 12px !important;
+  }
+
+  .rule-body p {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  .badges-flex-container {
+    gap: 6px !important;
+  }
+
+  .achievement-badge-item {
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+
+  .achievement-badge-item .ach-icon {
+    font-size: 18px !important;
+  }
+
+  .achievement-badge-item .ach-text strong {
+    font-size: 11.5px !important;
+  }
+
+  .achievement-badge-item .ach-text small {
+    font-size: 10px !important;
+  }
+
+  .review-game-header {
+    padding: 12px !important;
+  }
+
+  .review-game-header h2 {
+    font-size: 18px !important;
+  }
+
+  .review-score {
+    position: static !important;
+    display: inline-block !important;
+    margin-top: 8px !important;
+    font-size: 12px !important;
+    padding: 4px 10px !important;
+  }
+
+  .review-level-list {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .review-level-btn {
+    padding: 10px 12px !important;
+    min-height: 48px !important;
+  }
+
+  .review-question-card {
+    padding: 14px 12px !important;
+  }
+
+  .review-question-prompt {
+    font-size: 14.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .review-options {
+    gap: 8px !important;
+  }
+
+  .review-option {
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+    min-height: 48px !important;
+  }
+
+  .review-option-letter {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 11.5px !important;
+    flex: 0 0 26px !important;
+  }
+
+  /* 9. BÀN THỬ TỰ DO (SANDBOX) TRÊN MOBILE */
+  .sandbox-coefficient-form {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .sandbox-coefficient-form button {
+    grid-column: 1 / -1 !important;
+    padding: 11px !important;
+    min-height: 44px !important;
+  }
+
+  .sandbox-result-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .sandbox-result-grid > .sandbox-oblique-result {
+    grid-column: auto !important;
+  }
+
+  /* 10. THỬ THÁCH DỰ ĐOÁN HÀM MỚI TRÊN MOBILE (CHALLENGE INPUTS FIX) */
+  .challenge-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .challenge-inputs-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .challenge-input-field {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .challenge-input-field label {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .challenge-input-field input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  /* 11. NỀN VỞ HỌC SINH TRÊN MOBILE */
+  .notebook-footer-section {
+    margin-top: 24px !important;
+    width: 100% !important;
+  }
+
+  .notebook-rings {
+    padding: 0 16px !important;
+    gap: 8px !important;
+  }
+
+  .notebook-ring {
+    width: 10px !important;
+    height: 20px !important;
+  }
+
+  .notebook-page-sheet {
+    padding: 16px 14px 14px 34px !important;
+    background-image: 
+      linear-gradient(90deg, transparent 24px, #F87171 24px, #F87171 25.5px, transparent 25.5px),
+      linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px) !important;
+    border-radius: 12px !important;
+  }
+
+  body.night-flight .notebook-page-sheet {
+    background-image: 
+      linear-gradient(90deg, transparent 24px, rgba(239, 68, 68, 0.5) 24px, rgba(239, 68, 68, 0.5) 25.5px, transparent 25.5px),
+      linear-gradient(rgba(56, 189, 248, 0.07) 1px, transparent 1px) !important;
+  }
+
+  .notebook-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .notebook-title-badge {
+    font-size: 12px !important;
+  }
+
+  .notebook-notes-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .notebook-note-col {
+    padding: 10px 12px !important;
+  }
+
+  .notebook-footer-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    font-size: 10.5px !important;
+  }
+}

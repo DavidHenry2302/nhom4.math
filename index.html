@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f7fb">
+  <title>Ôn lý thuyết — Nhóm 4 Rational Lab B</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/intro.css">
+</head>
+<body>
+  <main class="intro-shell">
+    <header class="intro-header">
+      <a class="brand" href="index.html" aria-label="Trang giới thiệu Rational Lab B">
+        <span class="brand-mark" aria-hidden="true">N4</span>
+        <span>NHÓM 4 - RATIONAL LAB B</span>
+      </a>
+      <span class="header-note">Ôn kiến thức trước khi khám phá</span>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">TOÁN 12 · HÀM PHÂN THỨC</p>
+        <h1>Hiểu tiệm cận<br><span>trước khi vào phòng lab</span></h1>
+        <p class="hero-lead">Ôn lại tiệm cận đứng, tiệm cận ngang và cách xác định chúng. Sau đó, bạn sẽ thử thay đổi hệ số và quan sát đồ thị tự thay đổi.</p>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="axis axis-x"></div><div class="axis axis-y"></div>
+        <div class="asymptote asymptote-v"></div><div class="asymptote asymptote-h"></div>
+        <svg viewBox="0 0 320 210" role="presentation">
+          <path d="M25 188 C55 185 76 178 94 158 C111 137 119 94 124 23 M156 187 C161 141 173 111 193 96 C219 77 251 71 300 68" />
+        </svg>
+        <span class="graph-label label-v">TCĐ</span><span class="graph-label label-h">TCN</span>
+      </div>
+    </section>
+
+    <section class="theory-section" aria-labelledby="theory-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">KIẾN THỨC CẦN DÙNG</p><h2 id="theory-title">Hai loại tiệm cận</h2></div>
+        <span class="theory-tag">THEO ĐỊNH NGHĨA TOÁN 12</span>
+      </div>
+
+      <div class="theory-grid">
+        <article class="theory-card vertical-card">
+          <div class="card-heading"><span class="card-icon">↕</span><h3>Tiệm cận đứng</h3></div>
+          <p>Đường thẳng \(x=x_0\) là tiệm cận đứng nếu <strong>ít nhất một</strong> trong hai giới hạn một phía sau bằng \(+\infty\) hoặc \(-\infty\):</p>
+          <div class="math-block">\[\lim_{x\to x_0^-}f(x)=\pm\infty\quad\text{hoặc}\quad\lim_{x\to x_0^+}f(x)=\pm\infty.\]</div>
+          <p class="card-footnote">Ta xét riêng phía trái và phía phải của \(x_0\); không cần giả sử giới hạn hai phía tồn tại.</p>
+        </article>
+
+        <article class="theory-card horizontal-card">
+          <div class="card-heading"><span class="card-icon">↔</span><h3>Tiệm cận ngang</h3></div>
+          <p>Đường thẳng \(y=L\) là tiệm cận ngang nếu một trong hai giới hạn tại vô cực bằng \(L\):</p>
+          <div class="math-block">\[\lim_{x\to +\infty}f(x)=L\quad\text{hoặc}\quad\lim_{x\to -\infty}f(x)=L.\]</div>
+          <p class="card-footnote">Ta quan sát giá trị hàm số khi \(x\) đi xa về bên phải hoặc bên trái.</p>
+        </article>
+      </div>
+
+      <article class="formula-card">
+        <div class="formula-copy">
+          <p class="eyebrow">TRƯỚC KHI KHÁM PHÁ</p>
+          <h3>Chỉ cần nhớ ý nghĩa bản chất</h3>
+          <p><strong>Tiệm cận đứng</strong> xuất hiện khi \(x\) tiến gần nghiệm làm <em>mẫu số bằng 0</em> (trong khi tử số khác 0), khiến giá trị phân thức tăng hoặc giảm không giới hạn ra vô cực \(\pm\infty\). <strong>Tiệm cận ngang</strong> xuất hiện khi \(x\) tiến xa ra vô cực \(\pm\infty\), bậc tử bằng bậc mẫu khiến giá trị hàm số tiến sát tỉ số hai hệ số dẫn đầu \(\frac{a}{c}\).</p>
+          <p>Trong phòng lab, em sẽ trực tiếp kéo hệ số và quan sát đồ thị trước. Công thức tính nhanh và chứng minh toán học sẽ được mở ở phần tổng kết sau khi em hoàn thành khám phá.</p>
+        </div>
+        <div class="formula-pair theory-scope">
+          <div><span>DẠNG HÀM SỐ SẼ KHÁM PHÁ</span>\[f(x)=\frac{ax+b}{cx+d}\]</div>
+          <div><span>QUY TRÌNH</span><strong>Dự đoán → Thử nghiệm → Quan sát → Tự giải thích</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="lab-preview" aria-label="Các hoạt động trong phòng thí nghiệm">
+      <div><p class="eyebrow">KHI ĐÃ SẴN SÀNG</p><h2>Bạn sẽ tự kiểm chứng bằng đồ thị</h2></div>
+      <ol>
+        <li><span>01</span>Dự đoán</li><li><span>02</span>Thử thay đổi hệ số</li><li><span>03</span>Quan sát giới hạn</li><li><span>04</span>Giải thích kết quả</li>
+      </ol>
+    </section>
+
+    <footer class="intro-footer">
+      <p>Bắt đầu từ kiến thức vừa ôn; trong phòng lab, hãy quan sát và giải thích bằng chính kết quả thí nghiệm.</p>
+      <a class="start-button" href="lab.html">Bắt đầu thí nghiệm <span aria-hidden="true">→</span></a>
+    </footer>
+  </main>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.renderMathInElement) {
+        window.renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '\\[', right: '\\]', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

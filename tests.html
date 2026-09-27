@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nhóm 4 - Rational Lab B — Kiểm Thử Động Cơ Sản Phẩm Thực Tế (100% Front-End)</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Consolas, monospace;
+      background: #090d16;
+      color: #e2e8f0;
+      padding: 24px;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #38bdf8;
+      font-size: 22px;
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .suite {
+      margin-bottom: 20px;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 16px;
+      background: #0f172a;
+    }
+    .suite h3 {
+      margin-top: 0;
+      color: #60a5fa;
+      font-size: 15px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 8px;
+    }
+    .test {
+      padding: 8px 12px;
+      margin: 4px 0;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-family: Consolas, monospace;
+    }
+    .test-desc {
+      flex: 1;
+    }
+    .test-status {
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .pass {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+    .fail {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+    .summary {
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .summary.pass {
+      border: 1.5px solid #10b981;
+    }
+    .summary.fail {
+      border: 1.5px solid #ef4444;
+    }
+    .badge-src {
+      display: inline-block;
+      font-size: 11px;
+      background: #1e293b;
+      color: #38bdf8;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <span>🎯 NHÓM 4 - RATIONAL LAB B — PRODUCTION CORE TEST SUITE</span>
+      <span class="badge-src">Nối trực tiếp js/flight_lab_app.js</span>
+    </h1>
+    <div class="subtitle">
+      Kiểm thử tự động các lớp và logic sản phẩm thực tế (không dùng bản sao chép mã). Chạy 100% Front-End độc lập không phụ thuộc backend.
+    </div>
+
+    <div id="results"></div>
+    <div id="summary" class="summary"></div>
+  </div>
+
+  <!-- Nạp mã nguồn thực tế của dự án -->
+  <script src="js/flight_lab_app.js"></script>
+
+  <script>
+    // =========================================================================
+    // KHUNG KIỂM THỬ TỰ ĐỘNG KẾT NỐI VỚI MÃ NGUỒN THỰC TẾ
+    // =========================================================================
+    let totalTests = 0;
+    let passedTests = 0;
+    const resultsDiv = document.getElementById('results');
+
+    function describe(suiteTitle, testFn) {
+      const suiteDiv = document.createElement('div');
+      suiteDiv.className = 'suite';
+      
+      const titleEl = document.createElement('h3');
+      titleEl.innerHTML = `<span>${suiteTitle}</span>`;
+      suiteDiv.appendChild(titleEl);
+
+      let suiteTotal = 0;
+      let suitePassed = 0;
+
+      const assert = (description, condition, details = '') => {
+        totalTests += 1;
+        suiteTotal += 1;
+        const testEl = document.createElement('div');
+        
+        if (condition) {
+          passedTests += 1;
+          suitePassed += 1;
+          testEl.className = 'test pass';
+          testEl.innerHTML = `<span class="test-desc">✓ ${description}</span><span class="test-status pass">PASS</span>`;
+        } else {
+          testEl.className = 'test fail';
+          testEl.innerHTML = `<span class="test-desc">✗ ${description} ${details ? '— ' + details : ''}</span><span class="test-status fail">FAIL</span>`;
+        }
+        suiteDiv.appendChild(testEl);
+      };
+
+      try {
+        testFn(assert);
+      } catch (err) {
+        assert('Lỗi ngoại lệ khi thực thi suite: ' + err.message, false);
+      }
+
+      titleEl.innerHTML += `<span style="font-size:12px; font-weight:normal; color:#94a3b8;">${suitePassed}/${suiteTotal} Đạt</span>`;
+      resultsDiv.appendChild(suiteDiv);
+    }
+
+    // =========================================================================
+    // SUITE 1: ĐỘNG CƠ TOÁN HỌC RATIONALFUNCTION (PRODUCTION CLASS)
+    // =========================================================================
+    describe('1. Động Cơ Toán Học: RationalFunction (Model Thực Tế)', assert => {
+      assert('Lớp RationalFunction được xuất thành công lên window từ flight_lab_app.js', typeof window.RationalFunction === 'function');
+
+      // 1.1 Hàm chuẩn f(x) = (2x + 1) / (x + 3)
+      const rfStandard = new window.RationalFunction(2, 1, 1, 3);
+      assert('Hàm chuẩn: Tính đúng định thức ad - bc = 2*3 - 1*1 = 5', rfStandard.determinant === 5);
+      assert('Hàm chuẩn: Nhận diện đúng Tiệm cận đứng x = -d/c = -3', rfStandard.vaX === -3);
+      assert('Hàm chuẩn: Nhận diện đúng Tiệm cận ngang y = a/c = 2', rfStandard.haY === 2);
+      assert('Hàm chuẩn: isStandard = true và isDegenerateHole = false', rfStandard.isStandard && !rfStandard.isDegenerateHole);
+
+      // 1.2 Hàm có điểm khuyết (suy biến) f(x) = (2x + 4) / (x + 2)
+      const rfHole = new window.RationalFunction(2, 4, 1, 2);
+      assert('Hàm điểm khuyết: ad - bc = 0', rfHole.determinant === 0);
+      assert('Hàm điểm khuyết: isDegenerateHole = true', rfHole.isDegenerateHole);
+      assert('Hàm điểm khuyết: Không có TCĐ (vaX === null)', rfHole.vaX === null);
+      assert('Hàm điểm khuyết: Tọa độ lỗ thủng đúng tại (-2, 2)', rfHole.holeX === -2 && rfHole.holeY === 2);
+
+      // 1.3 Hàm suy biến tuyến tính c = 0, d != 0: f(x) = (4x + 6) / 2
+      const rfLinear = new window.RationalFunction(4, 6, 0, 2);
+      assert('Hàm suy biến tuyến tính (c = 0): isDegenerateLinear = true', rfLinear.isDegenerateLinear);
+      assert('Hàm suy biến tuyến tính: Không có TCĐ (vaX === null)', rfLinear.vaX === null);
+
+      // 1.4 Hàm không xác định c = 0, d = 0
+      const rfUndefined = new window.RationalFunction(1, 1, 0, 0);
+      assert('Mẫu số đồng nhất 0: isUndefined = true', rfUndefined.isUndefined);
+
+      // 1.5 Tính giá trị hàm và đạo hàm
+      assert('Tính f(1) cho hàm chuẩn ra 3/4 = 0.75', Math.abs(rfStandard.evaluate(1) - 0.75) < 1e-9);
+      assert('Tính f(-3) tại TCĐ trả về null (gián đoạn vô cực)', rfStandard.evaluate(-3) === null);
+      assert('Đạo hàm f\'(1) = 5 / (1+3)^2 = 5/16 = 0.3125', Math.abs(rfStandard.derivative(1) - 0.3125) < 1e-9);
+
+      // 1.6 Giới hạn hai phía sát TCĐ x = -3 của f(x) = (2x + 1)/(x + 3)
+      // Tại x = -3, tử số = 2(-3) + 1 = -5 < 0.
+      // Khi x -> -3+ (x = -2.9999): mẫu = +0.0001 > 0 => f(x) -> -vô cùng (-50000)
+      // Khi x -> -3- (x = -3.0001): mẫu = -0.0001 < 0 => f(x) -> +vô cùng (+50000)
+      const nearRight = rfStandard.evaluate(-3 + 0.0001);
+      const nearLeft = rfStandard.evaluate(-3 - 0.0001);
+      assert('Tiến sát phía phải (x -> -3+): f(x) vọt xuống âm vô cùng (-50000) do tử < 0 và mẫu > 0', nearRight < -40000);
+      assert('Tiến sát phía trái (x -> -3-): f(x) vọt lên dương vô cùng lớn (+50000) do tử < 0 và mẫu < 0', nearLeft > 40000);
+    });
+
+    // =========================================================================
+    // SUITE 2: TRỰC QUAN HÓA & TÂM ĐỐI XỨNG I (INTERACTIVEGRAPHENGINE)
+    // =========================================================================
+    describe('2. Trực Quan Hóa Đồ Thị & Tâm Đối Xứng I (Canvas Engine)', assert => {
+      assert('Lớp InteractiveGraphEngine được xuất thành công lên window', typeof window.InteractiveGraphEngine === 'function');
+
+      const mockContainer = document.createElement('div');
+      mockContainer.style.width = '800px';
+      mockContainer.style.height = '600px';
+      document.body.appendChild(mockContainer);
+      const mockCanvas = document.createElement('canvas');
+      mockContainer.appendChild(mockCanvas);
+      const engine = new window.InteractiveGraphEngine(mockCanvas);
+
+      assert('Engine khởi tạo thành công với cờ showCenterI = true mặc định', engine.showCenterI === true);
+      assert('Engine có cờ showTCD = true và showTCN = true mặc định', engine.showTCD === true && engine.showTCN === true);
+
+      // Thiết lập hàm chuẩn f(x) = (2x + 1)/(x + 3)
+      const rf = new window.RationalFunction(2, 1, 1, 3);
+      engine.setFunction(rf);
+
+      // Tọa độ tâm đối xứng I là giao điểm của TCĐ x = -3 và TCN y = 2
+      const centerIx = rf.vaX;
+      const centerIy = rf.haY;
+      assert('Tâm đối xứng I có hoành độ x_I = vaX = -3', centerIx === -3);
+      assert('Tâm đối xứng I có tung độ y_I = haY = 2', centerIy === 2);
+
+      // Bật/tắt cờ showCenterI
+      engine.showCenterI = false;
+      assert('Hỗ trợ chuyển đổi trạng thái ẩn tâm đối xứng', engine.showCenterI === false);
+      engine.showCenterI = true;
+      assert('Hỗ trợ chuyển đổi trạng thái hiện tâm đối xứng', engine.showCenterI === true);
+
+      // Điểm M bám trên đồ thị
+      engine.setPointX(1.0);
+      assert('Điểm khảo sát M đặt tại hoành độ x = 1.0', engine.pointX === 1.0);
+      assert('Tung độ f(1) của điểm M tương ứng là 0.75', Math.abs(rf.evaluate(engine.pointX) - 0.75) < 1e-9);
+      mockContainer.remove();
+    });
+
+    // =========================================================================
+    // SUITE 3: BỘ SINH DỮ LIỆU & ĐỀ BÀI TỰ ĐỘNG (ASYMPTOTELABAPP GENERATORS)
+    // =========================================================================
+    describe('3. Bộ Sinh Dữ Liệu & Đề Bài Tự Động (Application Logic)', assert => {
+      assert('Lớp AsymptoteLabApp được xuất thành công lên window', typeof window.AsymptoteLabApp === 'function');
+      const app = new window.AsymptoteLabApp();
+
+      // 3.1 Sinh dữ liệu Hoạt động A
+      const actA = app.generateActivityData('A');
+      assert('Hoạt động A: c !== 0 và định thức ad - bc !== 0', actA.c !== 0 && (actA.a * actA.d - actA.b * actA.c !== 0));
+      assert('Hoạt động A: Có đủ các trường a, b, c, d', Number.isFinite(actA.a) && Number.isFinite(actA.b) && Number.isFinite(actA.c) && Number.isFinite(actA.d));
+
+      // 3.2 Sinh dữ liệu Hoạt động B
+      const actB = app.generateActivityData('B');
+      assert('Hoạt động B: c !== 0 và định thức ad - bc !== 0', actB.c !== 0 && (actB.a * actB.d - actB.b * actB.c !== 0));
+
+      // 3.3 Sinh đề kiểm tra hàm mới (Challenge Data)
+      const chall = app.generateChallengeData();
+      assert('Đề kiểm tra: c !== 0', chall.c !== 0);
+      assert('Đề kiểm tra: expectedVA bằng đúng -d/c', Math.abs(chall.expectedVA - (-chall.d / chall.c)) < 1e-9);
+      assert('Đề kiểm tra: expectedHA bằng đúng a/c', Math.abs(chall.expectedHA - (chall.a / chall.c)) < 1e-9);
+      assert('Đề kiểm tra: Tử số tại expectedVA khác 0 (không bị suy biến lỗ thủng)', chall.a * chall.expectedVA + chall.b !== 0);
+
+      // 3.4 Sinh bộ câu hỏi Ôn tập (Review Questions)
+      const reviewSets = app.generateReviewQuestionSets();
+      assert('Ôn tập: Đủ 3 cấp độ (Cấp 1: Nhận diện, Cấp 2: Thợ săn, Cấp 3: Thấu kính)', reviewSets.length === 3);
+
+      let allQuestionsValid = true;
+      reviewSets.forEach((lvl, lvlIdx) => {
+        lvl.questions.forEach((q, qIdx) => {
+          if (!q.prompt || !Array.isArray(q.options) || q.options.length < 3 || q.answer < 0 || q.answer >= q.options.length || !q.explain) {
+            allQuestionsValid = false;
+          }
+        });
+      });
+      assert('Tất cả câu hỏi ôn tập có đầy đủ lựa chọn, chỉ mục đáp án đúng hợp lệ và lời giải chi tiết', allQuestionsValid);
+    });
+
+    // =========================================================================
+    // SUITE 4: HỒ SƠ KHẢO SÁT HÀM SỐ TOÀN DIỆN CHUẨN SGK TOÁN 12
+    // =========================================================================
+    describe('4. Hồ Sơ Khảo Sát Toàn Diện: computeFunctionSurvey(rf)', assert => {
+      const app = new window.AsymptoteLabApp();
+
+      // Kiểm tra với hàm f(x) = (2x + 1) / (x - 3)
+      // a=2, b=1, c=1, d=-3 => ad - bc = 2*(-3) - 1*1 = -7 < 0
+      const rf = new window.RationalFunction(2, 1, 1, -3);
+      const profile = app.computeFunctionSurvey(rf);
+
+      assert('computeFunctionSurvey trả về đối tượng hồ sơ cho hàm chuẩn', profile !== null);
+      assert('Tập xác định: D = R \\ {3}', profile.domain.includes('3'));
+      assert('Tọa độ tâm đối xứng I: I(3; 2)', profile.centerI.includes('3') && profile.centerI.includes('2'));
+      assert('Giao điểm Oy: A(0; -0.33) do b/d = 1/(-3)', profile.oyIntercept.includes('0') && profile.oyIntercept.includes('-0.33'));
+      assert('Giao điểm Ox: B(-0.5; 0) do -b/a = -1/2', profile.oxIntercept.includes('-0.5'));
+      assert('Chiều biến thiên: Nghịch biến vì ad - bc = -7 < 0', profile.monoText.toLowerCase().includes('nghịch biến') && profile.monoText.includes('-7'));
+      assert('Cực trị: Khẳng định không có cực trị', profile.extremaText.includes('không có cực trị'));
+
+      // Kiểm tra hàm đồng biến ad - bc > 0: f(x) = (3x - 1) / (x + 2) => ad - bc = 6 - (-1) = 7 > 0
+      const rfInc = new window.RationalFunction(3, -1, 1, 2);
+      const profileInc = app.computeFunctionSurvey(rfInc);
+      assert('Chiều biến thiên: Đồng biến khi ad - bc > 0', profileInc.monoText.toLowerCase().includes('đồng biến') && profileInc.monoText.includes('7'));
+
+      // Kiểm tra hàm suy biến ad - bc = 0 => computeFunctionSurvey trả về null
+      const rfDeg = new window.RationalFunction(2, 4, 1, 2);
+      assert('Hàm suy biến lỗ thủng: computeFunctionSurvey trả về null', app.computeFunctionSurvey(rfDeg) === null);
+      
+      // Kiểm tra hàm c = 0 => computeFunctionSurvey trả về null
+      const rfLinear = new window.RationalFunction(2, 1, 0, 3);
+      assert('Hàm tuyến tính c = 0: computeFunctionSurvey trả về null', app.computeFunctionSurvey(rfLinear) === null);
+    });
+
+    // =========================================================================
+    // SUITE 5: LƯU TRỮ VÀ KHÔI PHỤC TIẾN ĐỘ LOCALSTORAGE (SỬA LỖI RESET ÔN TẬP)
+    // =========================================================================
+    describe('5. Lưu Trữ & Khôi Phục Tiến Độ (Khắc Phục Lỗi Reset Ôn Tập)', assert => {
+      // Dọn dẹp trước khi kiểm tra
+      try {
+        localStorage.clear();
+      } catch (e) {}
+
+      // 5.1 Kiểm tra lưu & khôi phục bài học cá nhân
+      localStorage.setItem('rational_lab_personal_lesson', 'Ghi chú học tập tiệm cận của học sinh 12A1');
+      const appInstance1 = new window.AsymptoteLabApp();
+      assert('Khôi phục bài học cá nhân từ localStorage thành công', appInstance1.personalLesson === 'Ghi chú học tập tiệm cận của học sinh 12A1');
+
+      // 5.2 Kiểm tra lưu & khôi phục bảng tự đánh giá
+      const assessmentData = { twoSides: true, infinityDirection: true, definition: true, horizontal: true };
+      localStorage.setItem('rational_lab_self_assessment', JSON.stringify(assessmentData));
+      localStorage.setItem('rational_lab_assessment_done', 'true');
+      const appInstance2 = new window.AsymptoteLabApp();
+      assert('Khôi phục bảng tự đánh giá thành công', appInstance2.noteSelfAssessment.twoSides === true && appInstance2.noteSelfAssessmentDone === true);
+
+      // 5.3 Kiểm tra lưu tiến độ Ôn tập
+      const reviewProgress = { level: 2, score: 30, completed: [1] };
+      localStorage.setItem('rational_lab_review_progress', JSON.stringify(reviewProgress));
+      const appInstance3 = new window.AsymptoteLabApp();
+      assert('Khởi tạo app khôi phục đúng Cấp độ 2', appInstance3.reviewGame.level === 2);
+      assert('Khởi tạo app khôi phục đúng Điểm số 30', appInstance3.reviewGame.score === 30);
+      assert('Khởi tạo app khôi phục đúng mảng hoàn thành [1]', appInstance3.reviewGame.completed.includes(1));
+
+      // 5.4 KIỂM TRA QUAN TRỌNG: Sửa dứt điểm lỗi switchActivity('review') ghi đè tiến độ
+      appInstance3.switchActivity('A'); // Chuyển sang tab A
+      assert('Chuyển sang Hoạt động A thành công', appInstance3.currentActivity === 'A');
+      
+      // Người dùng quay lại mở tab Ôn tập
+      appInstance3.switchActivity('review');
+      assert('Sau khi mở lại tab review: level = 2 được bảo toàn (KHÔNG bị reset về 1)', appInstance3.reviewGame.level === 2);
+      assert('Sau khi mở lại tab review: score = 30 được bảo toàn (KHÔNG bị reset về 0)', appInstance3.reviewGame.score === 30);
+      assert('Sau khi mở lại tab review: completed = [1] được bảo toàn (KHÔNG bị xóa rỗng)', appInstance3.reviewGame.completed.length === 1 && appInstance3.reviewGame.completed[0] === 1);
+      assert('Sau khi mở lại tab review: bộ câu hỏi vẫn đầy đủ', Array.isArray(appInstance3.reviewGame.questions) && appInstance3.reviewGame.questions.length === 3);
+
+      // Dọn dẹp sau khi kiểm tra
+      try {
+        localStorage.clear();
+      } catch (e) {}
+    });
+
+    // =========================================================================
+    // TỔNG KẾT
+    // =========================================================================
+    const summaryDiv = document.getElementById('summary');
+    const allPassed = passedTests === totalTests;
+    summaryDiv.className = `summary ${allPassed ? 'pass' : 'fail'}`;
+    summaryDiv.innerHTML = `TỔNG KẾT: ${passedTests}/${totalTests} BÀI KIỂM THỬ ĐẠT CHUẨN (${allPassed ? '100% HOÀN HẢO - MÃ NGUỒN SẢN PHẨM SẴN SÀNG' : 'CÓ LỖI CẦN XỬ LÝ'})`;
+  </script>
+</body>
+</html>
