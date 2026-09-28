@@ -2901,11 +2901,71 @@
           </div>
 
           <section class="summary-curiosity-card">
-            <h3>✨ Kiến thức lạ: Điểm khuyết</h3>
-            <p>Đôi khi tử và mẫu cùng bằng \\(0\\) tại một giá trị \\(x_0\\). Nếu rút gọn được nhân tử chung, hàm số có thể bằng một biểu thức đơn giản hơn với mọi \\(x\\ne x_0\\), nhưng vẫn không xác định tại \\(x_0\\). Trên đồ thị, vị trí còn thiếu ấy được đánh dấu bằng một vòng tròn rỗng và gọi là <strong>điểm khuyết</strong>.</p>
-            <p>Với dạng \\(f(x)=\\dfrac{ax+b}{cx+d}\\), nếu \\(c\\ne0\\) và \\(ad-bc=0\\), thì \\(ax+b=\\dfrac ac(cx+d)\\). Do đó \\(f(x)=\\dfrac ac\\) khi \\(x\\ne-\\dfrac dc\\), còn tại \\(x_0=-\\dfrac dc\\) hàm không xác định.</p>
-            <div class="math-proof-equation">\\[\\text{Điểm khuyết: }\\left(-\\dfrac dc,\\,\\dfrac ac\\right).\\]</div>
-            <p class="summary-curiosity-note"><strong>Lưu ý:</strong> Đây là kiến thức mở rộng để nhận biết trường hợp đặc biệt; điểm khuyết không phải là tiệm cận đứng.</p>
+            <h3>✨ Vì sao lại có điều kiện $ad - bc \\neq 0$?</h3>
+            <p>Trước hết, ta cần hiểu <strong>điểm khuyết là gì?</strong></p>
+            <p>Đối với hàm phân thức bậc nhất trên bậc nhất, điểm khuyết xuất hiện khi tồn tại một giá trị $x_0$ làm cho cả tử số và mẫu số đồng thời bằng $0$.</p>
+            
+            <p><strong>Ví dụ:</strong></p>
+            <div class="math-proof-equation">
+              \\[f(x) = \\dfrac{2x + 4}{x + 2} = \\dfrac{2(x + 2)}{x + 2} = 2, \\quad x \\neq -2\\]
+            </div>
+            
+            <p>Ta thấy tại $x = -2$, cả tử số và mẫu số đều bằng $0$. Vì vậy, hàm số không xác định tại $x = -2$.</p>
+            <p>Nói cách khác, khi tử và mẫu của một hàm phân thức bậc nhất trên bậc nhất có nhân tử chung, ta có thể rút gọn hàm số thành một hằng số. Tuy nhiên, giá trị $x_0$ làm cho mẫu số ban đầu bằng $0$ vẫn bị loại khỏi tập xác định.</p>
+            <p>Khi đó, đồ thị là <strong>một đường thẳng nằm ngang bị khuyết một điểm</strong>, chứ không phải một đường thẳng đầy đủ.</p>
+            <p>Trong ví dụ trên, đồ thị là đường thẳng $y = 2$, bị khuyết tại $(-2;\\, 2)$.</p>
+            
+            <p><strong>Điểm khuyết không tạo ra tiệm cận đứng</strong>, bởi vì khi $x$ tiến đến $x_0$, giá trị hàm số tiến đến một số hữu hạn, thay vì tiến đến vô cực.</p>
+            <p>Do đó, để hàm phân thức bậc nhất trên bậc nhất có tiệm cận đứng, ta cần đảm bảo <strong>không xuất hiện điểm khuyết tại vị trí mẫu số bằng $0$</strong>.</p>
+            
+            <hr style="border: none; border-top: 1px dashed rgba(161, 98, 7, 0.25); margin: 14px 0;">
+            
+            <p><strong>Xét hàm số:</strong></p>
+            <div class="math-proof-equation">
+              \\[f(x) = \\dfrac{ax + b}{cx + d}, \\quad c \\neq 0\\]
+            </div>
+            
+            <p>Mẫu số bằng $0$ khi:</p>
+            <div class="math-proof-equation">
+              \\[cx + d = 0 \\implies x_0 = -\\dfrac{d}{c}\\]
+            </div>
+            
+            <p>Để tại $x_0$ không xuất hiện điểm khuyết, tử số phải khác $0$:</p>
+            <div class="math-proof-equation">
+              \\[ax_0 + b \\neq 0\\]
+            </div>
+            
+            <p>Thay $x_0 = -\\dfrac{d}{c}$ vào tử số:</p>
+            <div class="math-proof-equation">
+              \\[a\\left(-\\dfrac{d}{c}\\right) + b \\neq 0\\]
+            </div>
+            
+            <p>Quy đồng:</p>
+            <div class="math-proof-equation">
+              \\[\\dfrac{bc - ad}{c} \\neq 0\\]
+            </div>
+            
+            <p>Vì $c \\neq 0$, suy ra:</p>
+            <div class="math-proof-equation">
+              \\[bc - ad \\neq 0\\]
+            </div>
+            
+            <p>Tương đương:</p>
+            <div class="math-proof-equation">
+              \\[\\boxed{ad - bc \\neq 0}\\]
+            </div>
+            
+            <div style="background: rgba(255, 255, 255, 0.9); border-left: 4px solid var(--primary, #2563eb); border-radius: 8px; padding: 12px 14px; margin-top: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <p style="margin: 0 0 6px;"><strong>Kết luận:</strong> Để hàm phân thức bậc nhất trên bậc nhất có tiệm cận đứng, ta cần hai điều kiện:</p>
+              <div style="text-align: center; margin: 10px 0;">
+                \\[\\boxed{c \\neq 0, \\quad ad - bc \\neq 0}\\]
+              </div>
+              <p style="margin: 6px 0 4px;"><strong>Trong đó:</strong></p>
+              <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6;">
+                <li>$c \\neq 0$: Đảm bảo mẫu số có nghiệm $x_0 = -\\dfrac{d}{c}$.</li>
+                <li>$ad - bc \\neq 0$: Đảm bảo tử số không đồng thời bằng $0$ tại $x_0$, từ đó không xuất hiện điểm khuyết mà xuất hiện tiệm cận đứng.</li>
+              </ul>
+            </div>
           </section>
 
           <section class="summary-procedure-card">
@@ -2917,6 +2977,7 @@
               <li><strong>Ghi kết luận:</strong> nêu rõ phương trình từng đường tiệm cận và phép tính dẫn đến kết quả; không chỉ ghi mỗi đáp số.</li>
             </ol>
             <p class="summary-procedure-example"><strong>Mẫu trình bày:</strong> “Giải \\(cx+d=0\\) được \\(x=...\\); tử số tại đó khác 0 nên ... . Mặt khác, \\(\\lim_{x\\to\\pm\\infty}f(x)=...\\), vậy ... .”</p>
+            <p class="summary-procedure-example"><strong>Mẫu khác:</strong> Bạn có thể sử dụng Lim theo lý thuyết để tính toán và trình bày tương tự.</p>
           </section>
 
           <details class="formula-highlight-box" style="margin:14px 0;">
@@ -2935,7 +2996,7 @@
               <p>Khi \\(x\\to+\\infty\\) hoặc \\(x\\to-\\infty\\), ta có \\(\\dfrac bx\\to0\\) và \\(\\dfrac dx\\to0\\). Do \\(c\\ne0\\), ở cả hai trường hợp:</p>
               <div class="math-proof-equation">\\[\\lim_{x\\to+\\infty}f(x)=\\dfrac ac,\\qquad \\lim_{x\\to-\\infty}f(x)=\\dfrac ac.\\]</div>
               <p>Theo định nghĩa, đường thẳng \\(y=\\dfrac ac\\) là tiệm cận ngang.</p>
-              <p class="summary-proof-scope">Kết luận áp dụng với điều kiện của nhiệm vụ: \\(c\\ne0\\) và \\(ad-bc\\ne0\\).</p>
+              <p style ="color: red"><strong>Lưu ý: Công thức tính nhanh Tiệm cận đứng và tiệm cận ngang từ các giá trị a,c,d chỉ đúng với hàm phân thức bậc nhất trên bậc nhất, còn những hàm khác cần cẩn trọng.</strong></p>
             </div>
           </details>
 
