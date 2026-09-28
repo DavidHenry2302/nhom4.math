@@ -57,8 +57,7 @@ $$f(x) = \frac{ax+b}{cx+d} \quad (c \ne 0, \; ad - bc \ne 0)$$
 
 ### 3.1. Chạy Trực Tiếp Offline Trên Máy Tính
 Ứng dụng được xây dựng **100% thuần Front-End**, không cần cài đặt NodeJS, Python hay bất kỳ phần mềm máy chủ nào:
-* **Cách 1 (Windows):** Nhấp đúp chuột vào tệp `start_lab.bat`.
-* **Cách 2 (Mọi hệ điều hành - Windows, macOS, Linux):** Mở trực tiếp tệp `index.html` hoặc `lab.html` bằng bất kỳ trình duyệt web hiện đại nào (Chrome, Edge, Firefox, Safari).
+* **Cách 1 (Mọi hệ điều hành - Windows, macOS, Linux):** Mở trực tiếp tệp `index.html` hoặc `lab.html` bằng bất kỳ trình duyệt web hiện đại nào (Chrome, Edge, Firefox, Safari).
 
 ### 3.2. Triển Khai Miễn Phí Lên GitHub Pages (Khuyên Dùng)
 1. Đăng nhập vào [GitHub](https://github.com) và tạo một Repository mới (ví dụ: `rational-lab-b`).
@@ -96,8 +95,6 @@ Math_Web/
 ├── docs/
 │   ├── BAO_CAO_SO_KHAO.md # Báo cáo kiểm toán kỹ thuật sơ thảo
 │   └── images/           # Ảnh chụp giao diện thực tế nghiệm thu dự án
-└── src/                  # Thư viện mô-đun toán học mở rộng (Model, Limits, Journey)
-```
 
 ### Các Công nghệ Nổi Bật:
 * **HTML5 Canvas 2D Engine**: Vẽ đồ thị Hypebol với độ phân giải sub-pixel, tự động phân nhánh đồ thị khi đi qua tiệm cận đứng để tránh hiện tượng nối nét sai giải tích. Hỗ trợ Pan (kéo rê hệ trục) và Zoom (phóng to/thu nhỏ) bằng chuột hoặc chạm đa điểm.
@@ -105,6 +102,7 @@ Math_Web/
 * **Mô Hình Dữ Liệu Toán Học Chính Xác Tuyệt Đối**: Lớp `RationalFunction` xử lý chuẩn xác từng phép chia, tính định thức $`ad-bc`$, xác định điểm thủng (Removable Discontinuity) khi tử và mẫu có nghiệm chung, nhận diện suy biến $`c=0`$ thành đường thẳng.
 * **Kiến Trúc CSS Thích Ứng (Adaptive CSS Grid)**: Phân tách rõ ràng giữa 3 tập tin CSS (`pc.css`, `tablet.css`, `mobile.css`), đảm bảo không có bất kỳ thành phần nào bị tràn viền (overflow) trên mọi kích thước màn hình từ 320px đến 4K.
 * **Hỗ trợ bản phím ảo**: Hỗ trợ sử dụng nhập dữ liệu bằng bàn phím ảo trên PC/MB.
+* **Bộ sinh câu hỏi và đáp án**: Tích hợp bộ sinh câu hỏi đa dạng để học sinh luyện tập bài học trực tiếp trên website.
 ---
 
 ## 🤖 5. Ứng Dụng Trí Tuệ Nhân Tạo (AI) Trong Dự Án
@@ -160,8 +158,9 @@ KẾT QUẢ KIỂM THỬ: 56/56 BÀI KIỂM THỬ ĐẠT CHUẨN (100% HOÀN H�
 
 ---
 
-## 👥 9. Đội Ngũ & Bản Quyền
+## 👥 8. Đội Ngũ & Bản Quyền
 
 * **Sản phẩm học tập sáng tạo:** **12C1 - THPT DUONG DONG**
 * **Môn học:** Toán 12
+* * **Contact:** nguyenhuytuankiet2302@gmail.com
 * **Bản quyền mã nguồn:** Dự án được phát hành theo giấy phép mã nguồn mở MIT License. Tự do sử dụng, chỉnh sửa và ứng dụng vào mục đích giảng dạy và học tập phi thương mại.
