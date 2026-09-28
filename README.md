@@ -72,30 +72,6 @@ $$f(x) = \frac{ax+b}{cx+d} \quad (c \ne 0, \; ad - bc \ne 0)$$
 
 ---
 
-## 🛠️ 4. Kiến Trúc Kỹ Thuật & Cách Thức Xây Dựng
-
-Dự án tuân thủ nghiêm ngặt nguyên lý **"Front-End Tinh Gọn - Độc Lập - Hiệu Năng Cao"**:
-
-```text
-Math_Web/
-├── index.html            # Trạm khởi động: Ôn tập lý thuyết nền tảng SGK Toán 12
-├── lab.html              # Phòng thí nghiệm tương tác trung tâm
-├── tests.html            # Khung kiểm thử tự động 56 bài test toán học nối mã nguồn thật
-├── start_lab.bat         # Phím tắt mở nhanh trên Windows
-├── README.md             # Tài liệu thuyết minh & hướng dẫn triển khai
-├── .gitignore            # Cấu hình lọc tệp rác khi đẩy lên Git/GitHub
-├── css/
-│   ├── lab_theme.css     # Hệ thống biến CSS variables, hiệu ứng glassmorphism & sổ tay
-│   ├── pc.css            # Layout chuyên biệt cho màn hình PC / Laptop rộng rãi
-│   ├── tablet.css        # Layout cân bằng cho Máy tính bảng / iPad
-│   ├── mobile.css        # Layout chuyên sâu chống tràn viền cho Smartphone
-│   └── intro.css         # Định kiểu tối giản cho trang giới thiệu lý thuyết
-├── js/
-│   └── flight_lab_app.js # Bộ máy xử lý nguyên khối (Toán học, Canvas, Sự kiện, Lưu trữ)
-├── docs/
-│   ├── BAO_CAO_SO_KHAO.md # Báo cáo kiểm toán kỹ thuật sơ thảo
-│   └── images/           # Ảnh chụp giao diện thực tế nghiệm thu dự án
-
 ### Các Công nghệ Nổi Bật:
 * **HTML5 Canvas 2D Engine**: Vẽ đồ thị Hypebol với độ phân giải sub-pixel, tự động phân nhánh đồ thị khi đi qua tiệm cận đứng để tránh hiện tượng nối nét sai giải tích. Hỗ trợ Pan (kéo rê hệ trục) và Zoom (phóng to/thu nhỏ) bằng chuột hoặc chạm đa điểm.
 * **KaTeX Renderer Tốc Độ Cao**: Sử dụng thư viện KaTeX để hiển thị toàn bộ công thức toán học sắc nét. Thời gian render nhanh gấp 10 lần MathJax, hoàn toàn không gây giật lag trình duyệt.
@@ -105,24 +81,7 @@ Math_Web/
 * **Bộ sinh câu hỏi và đáp án**: Tích hợp bộ sinh câu hỏi đa dạng để học sinh luyện tập bài học trực tiếp trên website.
 ---
 
-## 🤖 5. Ứng Dụng Trí Tuệ Nhân Tạo (AI) Trong Dự Án
-
-Dự án này là minh chứng tiêu biểu cho việc ứng dụng Trí Tuệ Nhân Tạo (Generative AI & LLM) một cách có phương pháp và chiều sâu trong giáo dục (EdTech):
-
-### 5.1. AI Đóng Vai Trò Gì & Ứng Dụng Vào Mục Đích Gì?
-1. **Thiết Kế Sư Phạm Tương Tác (Pedagogical Scaffolding)**:
-   - *Mục đích:* Chuyển đổi một bài giảng toán lý thuyết khô khan thành một chuỗi trải nghiệm khám phá theo mô hình nhận thức **Dự đoán $`\to`$ Thử nghiệm $`\to`$ Quan sát $`\to`$ Tự giải thích**.
-   - *Cách thực hiện:* AI được dùng để phân tích những lỗi tư duy phổ biến nhất của học sinh Việt Nam khi học tiệm cận (ví dụ: ngộ nhận cứ cho mẫu bằng 0 là có TCĐ mà quên điều kiện tử khác 0; ngộ nhận đồ thị không bao giờ cắt đường tiệm cận; ngộ nhận bấm máy tính $`x \to \infty`$ bị tràn số máy tính `Math ERROR`). Từ đó, AI thiết kế các kịch bản thử nghiệm để học sinh tự "vấp ngã" và tự sửa sai.
-2. **Sinh Đề Thông Minh (Smart Item Generation)**:
-   - *Mục đích:* Tạo ngân hàng câu hỏi và bài tập thử thách ngẫu nhiên không trùng lặp, đảm bảo tính chuẩn xác toán học.
-   - *Cách thực hiện:* AI xây dựng thuật toán sinh hệ số ngẫu nhiên có kiểm soát (Constraint Satisfaction): luôn lọc bỏ các hàm số có nghiệm quá lớn, tự động cân đối tỉ số $`a/c`$ và $`-d/c`$ để điểm đối xứng $`I`$ luôn nằm trong vùng quan sát của đồ thị, và cố tình sinh ra các phương án nhiễu (Distractors) đánh trúng các ngộ nhận toán học.
-3. **Kiểm Thử Toàn Diện & Rà Soát Lỗ Hổng Bảo Mật (Automated Test & Security Audit)**:
-   - *Mục đích:* Đảm bảo ứng dụng chạy 100% không lỗi trên môi trường web tĩnh.
-   - *Cách thực hiện:* AI thiết kế bộ 56 ca kiểm thử tự động, bao quát từ các hàm số chuẩn, hàm có hệ số âm, hàm phân số, đến các trường hợp biên đặc biệt (suy biến, mẫu bằng hằng số, điểm gián đoạn khử được).
-
----
-
-## 💡 6. Ý Tưởng Thiết Kế Của Từng Phân Khu Chức Năng
+## 💡 4. Ý Tưởng Thiết Kế Của Từng Phân Khu Chức Năng
 
 | Phân khu | Ý tưởng thiết kế sư phạm & trải nghiệm | Chi tiết triển khai |
 | :--- | :--- | :--- |
@@ -139,7 +98,7 @@ Dự án này là minh chứng tiêu biểu cho việc ứng dụng Trí Tuệ N
 
 ---
 
-## 🧪 7. Bằng Chứng Nghiệm Thu Kiểm Thử Tự Động (56/56 PASS)
+## 🧪 5. Bằng Chứng Nghiệm Thu Kiểm Thử Tự Động (56/56 PASS)
 
 Ứng dụng đi kèm bộ kiểm thử động cơ sản phẩm thực tế tại [tests.html](tests.html), nối trực tiếp với mã nguồn [js/flight_lab_app.js](js/flight_lab_app.js):
 
@@ -158,7 +117,7 @@ KẾT QUẢ KIỂM THỬ: 56/56 BÀI KIỂM THỬ ĐẠT CHUẨN (100% HOÀN H�
 
 ---
 
-## 👥 8. Đội Ngũ & Bản Quyền
+## 👥 6. Đội Ngũ & Bản Quyền
 
 * **Sản phẩm học tập sáng tạo:** **12C1 - THPT DUONG DONG**
 * **Môn học:** Toán 12
