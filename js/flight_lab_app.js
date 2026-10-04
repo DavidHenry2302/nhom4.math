@@ -1191,7 +1191,7 @@
                   <div class="notebook-note-col">
                     <div class="notebook-note-title">🟢 Tiệm cận ngang (TCN)</div>
                     <p class="notebook-note-desc">
-                      Nếu $\\lim_{x\\to+\\infty}f(x)=L_1$ thì $y=L_1$ là tiệm cận ngang về phía $+\\infty$. Nếu $\\lim_{x\\to-\\infty}f(x)=L_2$ thì $y=L_2$ là tiệm cận ngang về phía $-\\infty$.
+                      Nếu $\\lim_{x\\to+\\infty}f(x)=L$ hoặc $\\lim_{x\\to-\\infty}f(x)=L$ thì đường thẳng $y=L$ là tiệm cận ngang của đồ thị hàm số (với $f(x)=\\dfrac{ax+b}{cx+d}$, TCN là $y=\\dfrac{a}{c}$).
                     </p>
                   </div>
 
@@ -1634,6 +1634,105 @@
       };
     }
 
+    formatFractionLatex(num, den) {
+      if (den === 0) return 'Không xác định';
+      if (num === 0) return '0';
+      if (den < 0) { num = -num; den = -den; }
+      if (num % den === 0) return String(num / den);
+      const gcd = (x, y) => y === 0 ? x : gcd(y, x % y);
+      const g = gcd(Math.abs(num), Math.abs(den));
+      const sN = num / g;
+      const sD = den / g;
+      if (sD === 1) return String(sN);
+      if (sN < 0) return `-\\dfrac{${Math.abs(sN)}}{${sD}}`;
+      return `\\dfrac{${sN}}{${sD}}`;
+    }
+
+    formatBbtValue(num, den) {
+      if (den === 0) return '—';
+      if (num === 0) return '0';
+      if (den < 0) { num = -num; den = -den; }
+      if (num % den === 0) return String(num / den);
+      const gcd = (x, y) => y === 0 ? x : gcd(y, x % y);
+      const g = gcd(Math.abs(num), Math.abs(den));
+      const sN = num / g;
+      const sD = den / g;
+      if (sD === 1) return String(sN);
+      if (sD <= 10) return `${sN}/${sD}`;
+      const val = num / den;
+      return Number.isInteger(val) ? String(val) : val.toFixed(2).replace(/\.?0+$/, '');
+    }
+
+    generateBbtSvg(rf) {
+      if (!rf || rf.c === 0) return '';
+      const det = rf.a * rf.d - rf.b * rf.c;
+      if (det === 0) return '';
+      const isIncreasing = det > 0;
+      const sign = isIncreasing ? '+' : '−';
+      const x0Str = this.formatBbtValue(-rf.d, rf.c);
+      const yhaStr = this.formatBbtValue(rf.a, rf.c);
+
+      const arrowMarker = `<defs>
+        <marker id="bbt-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 1.5 L 7 5 L 0 8.5 z" fill="#000000" />
+        </marker>
+      </defs>`;
+
+      let yElements = '';
+      if (isIncreasing) {
+        yElements = `
+          <text x="105" y="162" text-anchor="middle" font-size="15" fill="#000">${yhaStr}</text>
+          <text x="310" y="94" text-anchor="middle" font-size="15" fill="#000">+∞</text>
+          <line x1="125" y1="155" x2="292" y2="98" stroke="#000" stroke-width="1.3" marker-end="url(#bbt-arrow)" />
+
+          <text x="350" y="162" text-anchor="middle" font-size="15" fill="#000">−∞</text>
+          <text x="555" y="94" text-anchor="middle" font-size="15" fill="#000">${yhaStr}</text>
+          <line x1="370" y1="155" x2="537" y2="98" stroke="#000" stroke-width="1.3" marker-end="url(#bbt-arrow)" />
+        `;
+      } else {
+        yElements = `
+          <text x="105" y="94" text-anchor="middle" font-size="15" fill="#000">${yhaStr}</text>
+          <text x="310" y="162" text-anchor="middle" font-size="15" fill="#000">−∞</text>
+          <line x1="125" y1="98" x2="292" y2="155" stroke="#000" stroke-width="1.3" marker-end="url(#bbt-arrow)" />
+
+          <text x="350" y="94" text-anchor="middle" font-size="15" fill="#000">+∞</text>
+          <text x="555" y="162" text-anchor="middle" font-size="15" fill="#000">${yhaStr}</text>
+          <line x1="370" y1="98" x2="537" y2="155" stroke="#000" stroke-width="1.3" marker-end="url(#bbt-arrow)" />
+        `;
+      }
+
+      return `<div class="bbt-svg-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 180" style="background:#ffffff; border:1px solid #000000; font-family:'Times New Roman', Times, serif; width:100%; max-width:600px; height:auto; display:block; margin:0 auto;">
+          ${arrowMarker}
+          <!-- Khung kẻ bảng -->
+          <line x1="0" y1="36" x2="600" y2="36" stroke="#000" stroke-width="1" />
+          <line x1="0" y1="72" x2="600" y2="72" stroke="#000" stroke-width="1" />
+          <line x1="60" y1="0" x2="60" y2="180" stroke="#000" stroke-width="1" />
+          
+          <!-- Vạch kép tại x0 -->
+          <line x1="328" y1="36" x2="328" y2="180" stroke="#000" stroke-width="1.2" />
+          <line x1="332" y1="36" x2="332" y2="180" stroke="#000" stroke-width="1.2" />
+
+          <!-- Cột nhãn -->
+          <text x="30" y="24" text-anchor="middle" font-style="italic" font-size="16" fill="#000">x</text>
+          <text x="30" y="58" text-anchor="middle" font-style="italic" font-size="16" fill="#000">y′</text>
+          <text x="30" y="130" text-anchor="middle" font-style="italic" font-size="16" fill="#000">y</text>
+
+          <!-- Hàng x -->
+          <text x="105" y="24" text-anchor="middle" font-size="15" fill="#000">−∞</text>
+          <text x="330" y="24" text-anchor="middle" font-size="15" fill="#000">${x0Str}</text>
+          <text x="555" y="24" text-anchor="middle" font-size="15" fill="#000">+∞</text>
+
+          <!-- Hàng y' -->
+          <text x="215" y="58" text-anchor="middle" font-size="18" fill="#000">${sign}</text>
+          <text x="445" y="58" text-anchor="middle" font-size="18" fill="#000">${sign}</text>
+
+          <!-- Hàng y -->
+          ${yElements}
+        </svg>
+      </div>`;
+    }
+
     generateReviewQuestionSets() {
       const number = value => this.formatQuizNumber(value);
       const question = (prompt, options, correct, explain, funcInfo = null) => {
@@ -1681,21 +1780,21 @@
           title: 'Khởi động', subtitle: 'Nhận biết tiệm cận', badge: 'CẤP 1 · ĐƠN GIẢN', questions: [
             question(
               `Cho hàm số $h(x) = \\dfrac{${simpleNumerator}}{${simpleDenominator}}$. Khi $x \\to \\pm\\infty$, giá trị $h(x)$ tiến gần đến số nào?`,
-              [`$${number(level1a)}$`, `$${number(level1a + 1)}$`, `$${number(level1a - 1)}$`],
+              [`$${number(level1a)}$`, `$${number(level1a + 1)}$`, `$${number(level1a - 1)}$`, `$0$`],
               0,
               `Tử và mẫu cùng có bậc $1$ nên khi $x \\to \\pm\\infty$, giới hạn bằng tỉ số hai hệ số dẫn đầu: $\\lim_{x\\to \\pm\\infty} h(x) = \\dfrac{${level1a}}{1} = ${level1a}$. Do đó tiệm cận ngang là $y = ${level1a}$.`,
               { a: level1a, b: level1b, c: 1, d: level1d, va: simpleVA, ha: level1a, expr: `h(x) = \\dfrac{${simpleNumerator}}{${simpleDenominator}}` }
             ),
             question(
               `Cho hàm số $g(x) = \\dfrac{${level1SecondNumerator}}{${simpleDenominator}}$, mẫu số triệt tiêu tại $x = ${simpleVA}$ và tử số tại đó khác $0$. Đường thẳng nào là tiệm cận đứng của đồ thị?`,
-              [`$x = ${number(simpleVA)}$`, `$y = ${number(simpleVA)}$`, `$y = ${number(simpleVA + 1)}$`],
+              [`$x = ${number(simpleVA)}$`, `$y = ${number(simpleVA)}$`, `$x = ${number(simpleVA !== 0 ? -simpleVA : 1)}$`, `$y = ${number(simpleVA !== 2 ? 2 : -2)}$`],
               0,
               `Nghiệm của mẫu số là $${simpleDenominator} = 0 \\iff x = ${simpleVA}$. Vì tử số tại $x = ${simpleVA}$ khác $0$ nên các giới hạn một bên là $\\lim_{x \\to ${simpleVA}^+} g(x)$ và $\\lim_{x \\to ${simpleVA}^-} g(x)$ đều bằng vô cực ($+\\infty$ hoặc $-\\infty$). Theo định nghĩa SGK Toán 12, đường thẳng $x = ${number(simpleVA)}$ là tiệm cận đứng của đồ thị.`,
               { a: 2, b: level1b, c: 1, d: level1d, va: simpleVA, ha: 2, expr: `g(x) = \\dfrac{${level1SecondNumerator}}{${simpleDenominator}}` }
             ),
             question(
               `Cho hàm số $h(x) = \\dfrac{${simpleNumerator}}{${simpleDenominator}}$, biết $\\lim_{x\\to \\pm\\infty} h(x) = ${level1a}$. Phương trình đường tiệm cận ngang của đồ thị là:`,
-              [`$y = ${level1a}$`, `$x = ${level1a}$`, `$y = x + ${level1a}$`],
+              [`$y = ${level1a}$`, `$x = ${level1a}$`, `$y = -${level1a}$`, `$y = x + ${level1a}$`],
               0,
               `Theo định nghĩa, nếu $\\lim_{x\\to \\pm\\infty} h(x) = L$ thì đường thẳng nằm ngang $y = L$ là tiệm cận ngang. Do đó tiệm cận ngang là đường thẳng $y = ${level1a}$.`,
               { a: level1a, b: level1b, c: 1, d: level1d, va: simpleVA, ha: level1a, expr: `h(x) = \\dfrac{${simpleNumerator}}{${simpleDenominator}}` }
@@ -1706,21 +1805,21 @@
           title: 'Thợ săn tiệm cận', subtitle: 'Tìm tiệm cận và điểm khuyết', badge: 'CẤP 2 · VẬN DỤNG', questions: [
             question(
               `Cho hàm số $f(x) = \\dfrac{${standardNumerator}}{${standardDenominator}}$. Cặp đường tiệm cận đứng và tiệm cận ngang của đồ thị là:`,
-              [`$x = ${number(standardVA)}$ và $y = ${number(standardHA)}$`, `$x = ${number(standardHA)}$ và $y = ${number(standardVA)}$`, 'Đồ thị không có tiệm cận đứng'],
+              [`$x = ${number(standardVA)}$ và $y = ${number(standardHA)}$`, `$x = ${number(standardHA)}$ và $y = ${number(standardVA)}$`, `$x = ${number(-standardVA)}$ và $y = ${number(standardHA)}$`, 'Đồ thị không có tiệm cận đứng'],
               0,
               `Phương trình mẫu số $${standardDenominator} = 0 \\iff x = ${number(standardVA)}$. Tỉ số hai hệ số dẫn đầu là $\\dfrac{${level2a}}{${level2c}} = ${number(standardHA)}$. Vậy TCĐ là $x = ${number(standardVA)}$ và TCN là $y = ${number(standardHA)}$.`,
               { a: level2a, b: standardB, c: level2c, d: level2c * level2d, va: standardVA, ha: standardHA, expr: `f(x) = \\dfrac{${standardNumerator}}{${standardDenominator}}` }
             ),
             question(
               `Cho hàm số $g(x) = \\dfrac{${holeNumerator}}{${holeDenominator}}$. Nhận thấy $ad - bc = 0$ và cả tử lẫn mẫu cùng bằng $0$ tại nghiệm của mẫu. Đồ thị có điểm khuyết (lỗ thủng) tại đâu?`,
-              [`$(${number(holeX)};\\, ${number(holeY)})$`, `$(${number(holeY)};\\, ${number(holeX)})$`, 'Đồ thị không có điểm khuyết'],
+              [`$(${number(holeX)};\\, ${number(holeY)})$`, `$(${number(holeY)};\\, ${number(holeX)})$`, `$(${number(-holeX)};\\, ${number(holeY)})$`, 'Đồ thị không có điểm khuyết (có tiệm cận đứng)'],
               0,
               `Tử và mẫu có nhân tử chung $(x - ${number(holeX)})$. Rút gọn được $g(x) = ${number(holeY)}$ với mọi $x \\ne ${number(holeX)}$. Đồ thị là đường thẳng bị khoét một lỗ thủng tại điểm khuyết $(${number(holeX)};\\, ${number(holeY)})$, hoàn toàn không có tiệm cận đứng.`,
               { a: holeA, b: holeB, c: holeC, d: holeC * holeD, holeX: holeX, holeY: holeY, isHole: true, expr: `g(x) = \\dfrac{${holeNumerator}}{${holeDenominator}}` }
             ),
             question(
               `Hàm phân thức bậc nhất trên bậc nhất $f(x) = \\dfrac{${standardNumerator}}{${standardDenominator}}$ ở dạng chuẩn $(ad - bc \\ne 0, c \\ne 0)$ có đường tiệm cận xiên không?`,
-              ['Không có tiệm cận xiên (chỉ có 1 TCĐ và 1 TCN)', 'Có đúng 1 tiệm cận xiên', 'Luôn có tiệm cận xiên khi $a \\ne 0$'],
+              ['Không có tiệm cận xiên (chỉ có 1 TCĐ và 1 TCN)', 'Có đúng 1 tiệm cận xiên', 'Luôn có tiệm cận xiên khi $a \\ne 0$', 'Có 2 tiệm cận xiên đối xứng qua tâm $I$'],
               0,
               `Vì bậc của đa thức tử số bằng bậc của đa thức mẫu số (cùng bậc 1), giới hạn tại vô cực là hằng số hữu hạn $\\dfrac{a}{c}$, nên đồ thị hàm số chỉ có $1$ TCĐ và $1$ TCN, không có tiệm cận xiên.`,
               { a: level2a, b: standardB, c: level2c, d: level2c * level2d, va: standardVA, ha: standardHA, expr: `f(x) = \\dfrac{${standardNumerator}}{${standardDenominator}}` }
@@ -1731,21 +1830,21 @@
           title: 'Kỹ sư thấu kính', subtitle: 'Ứng dụng trong quang học', badge: 'CẤP 3 · THỬ THÁCH', questions: [
             question(
               `Xét mô hình thấu kính mỏng hội tụ lý tưởng có tiêu cự $f = ${focal}\\text{ cm}$ tạo ảnh thật ($d > f$). Theo công thức quang học $d' = \\dfrac{${focal}d}{d - ${focal}}$, khi vật thật tiến gần tiêu điểm từ phía $d > ${focal}\\text{ cm}$, khoảng cách ảnh $d'$ thay đổi thế nào?`,
-              [`Ảnh dịch chuyển ra vô cực ($d' \\to +\\infty$), tiệm cận đứng $d = ${focal}\\text{ cm}$`, `Ảnh tiến dần về vị trí $d' = ${focal}\\text{ cm}$`, `Ảnh tiến về sát thấu kính $d' = 0\\text{ cm}$`],
+              [`Ảnh dịch chuyển ra vô cực ($d' \\to +\\infty$), tiệm cận đứng $d = ${focal}\\text{ cm}$`, `Ảnh tiến dần về vị trí $d' = ${focal}\\text{ cm}$`, `Ảnh tiến về sát thấu kính $d' = 0\\text{ cm}$`, `Ảnh luôn đứng yên ở khoảng cách $d' = 2${focal}\\text{ cm}$`],
               0,
               `Khi $d \\to ${focal}^+$, mẫu số $(d - ${focal}) \\to 0^+$ khiến $d' \\to +\\infty$. Đây chính là hiện tượng tiệm cận đứng trong quang học: khi vật đặt tại tiêu điểm, chùm tia ló song song và ảnh ở vô cực.`,
               { isOptics: true, focal: focal, expr: `d' = \\dfrac{${focal}d}{d - ${focal}}` }
             ),
             question(
               `Với mô hình thấu kính mỏng hội tụ lý tưởng có tiêu cự $f = ${focal}\\text{ cm}$ và công thức ảnh $d' = \\dfrac{${focal}d}{d - ${focal}}$, khi vật ở rất xa nguồn sáng ($d \\to +\\infty$), vị trí ảnh $d'$ tiến gần giá trị nào?`,
-              [`$d' = ${focal}\\text{ cm}$ (tiêu diện ảnh)`, `$d' = ${number(focal / 2)}\\text{ cm}$`, `$d' \\to +\\infty$`],
+              [`$d' = ${focal}\\text{ cm}$ (tiêu diện ảnh)`, `$d' = ${number(focal / 2)}\\text{ cm}$`, `$d' = 0\\text{ cm}$`, `$d' \\to +\\infty$`],
               0,
               `Ta tính giới hạn: $\\lim_{d\\to +\\infty} d' = \\lim_{d\\to +\\infty} \\dfrac{${focal}}{1 - \\frac{${focal}}{d}} = ${focal}\\text{ cm}$. Đường thẳng nằm ngang $d' = ${focal}$ là tiệm cận ngang, nghĩa là chùm tia tới song song từ vô cực hội tụ đúng tại tiêu diện ảnh.`,
               { isOptics: true, focal: focal, expr: `d' = \\dfrac{${focal}d}{d - ${focal}}` }
             ),
             question(
               `Với mô hình thấu kính mỏng hội tụ có tiêu cự $f = ${focal}\\text{ cm}$, một vật thật đặt cách thấu kính khoảng cách $d = ${objectDistance}\\text{ cm}$ ($d > f$). Khoảng cách từ thấu kính đến ảnh thật $d'$ là:`,
-              [`$d' = ${number(imageDistance)}\\text{ cm}$`, `$d' = ${number(focal)}\\text{ cm}$`, `$d' = ${number(objectDistance)}\\text{ cm}$`],
+              [`$d' = ${number(imageDistance)}\\text{ cm}$`, `$d' = ${number(focal)}\\text{ cm}$`, `$d' = ${number(objectDistance)}\\text{ cm}$`, `$d' = ${number(imageDistance * 2)}\\text{ cm}$`],
               0,
               `Thay số vào công thức thấu kính: $d' = \\dfrac{${focal} \\times ${objectDistance}}{${objectDistance} - ${focal}} = \\dfrac{${focal * objectDistance}}{${objectDistance - focal}} = ${number(imageDistance)}\\text{ cm}$.`,
               { isOptics: true, focal: focal, expr: `d' = \\dfrac{${focal}d}{d - ${focal}}` }
@@ -2955,7 +3054,7 @@
               \\[\\boxed{ad - bc \\neq 0}\\]
             </div>
             
-            <div style="background: rgba(255, 255, 255, 0.9); border-left: 4px solid var(--primary, #2563eb); border-radius: 8px; padding: 12px 14px; margin-top: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div class="summary-hole-conclusion">
               <p style="margin: 0 0 6px;"><strong>Kết luận:</strong> Để hàm phân thức bậc nhất trên bậc nhất có tiệm cận đứng, ta cần hai điều kiện:</p>
               <div style="text-align: center; margin: 10px 0;">
                 \\[\\boxed{c \\neq 0, \\quad ad - bc \\neq 0}\\]
@@ -2969,15 +3068,28 @@
           </section>
 
           <section class="summary-procedure-card">
-            <h3>Quy trình tìm và trình bày tiệm cận</h3>
-            <ol>
-              <li><strong>Tìm tập xác định:</strong> giải phương trình mẫu số bằng 0 để biết giá trị cần loại khỏi tập xác định.</li>
-              <li><strong>Tìm tiệm cận đứng:</strong> giải \\(cx+d=0\\), rồi kiểm tra tử số tại nghiệm đó khác 0. Nếu đúng, kết luận đường thẳng \\(x=-\\dfrac dc\\) là tiệm cận đứng.</li>
-              <li><strong>Tìm tiệm cận ngang:</strong> tính hai giới hạn khi \\(x\\to+\\infty\\) và \\(x\\to-\\infty\\). Với dạng đang học, chia cả tử và mẫu cho \\(x\\), được \\(y=\\dfrac ac\\).</li>
-              <li><strong>Ghi kết luận:</strong> nêu rõ phương trình từng đường tiệm cận và phép tính dẫn đến kết quả; không chỉ ghi mỗi đáp số.</li>
+            <h3>Quy trình tìm và trình bày tiệm cận (Chuẩn SGK Toán 12)</h3>
+            <ol style="margin: 0; padding-left: 20px; line-height: 1.7;">
+              <li><strong>Tìm tập xác định:</strong> $D = \\mathbb{R} \\setminus \\left\\{-\\dfrac{d}{c}\\right\\}$.</li>
+              <li style="margin-top: 8px;"><strong>Tìm tiệm cận đứng:</strong>
+                <div class="math-proof-equation" style="margin: 6px 0;">\\[\\lim_{x \\to \\left(-\\frac{d}{c}\\right)^+} f(x) = \\pm\\infty \\quad\\text{và}\\quad \\lim_{x \\to \\left(-\\frac{d}{c}\\right)^-} f(x) = \\mp\\infty\\]</div>
+                <p style="margin: 4px 0; color: var(--text-muted); font-size: 12.5px;"><em>(Đối với hàm phân thức bậc nhất trên bậc nhất có thể dùng nhanh $x = -\\dfrac{d}{c}$).</em></p>
+                <p style="margin: 4px 0;">$\\implies$ Kết luận đường thẳng $x = -\\dfrac{d}{c}$ là <strong>đường tiệm cận đứng</strong> của đồ thị hàm số.</p>
+              </li>
+              <li style="margin-top: 8px;"><strong>Tìm tiệm cận ngang:</strong>
+                <div class="math-proof-equation" style="margin: 6px 0;">\\[\\lim_{x \\to +\\infty} f(x) = \\lim_{x \\to +\\infty} \\dfrac{a + \\frac{b}{x}}{c + \\frac{d}{x}} = \\dfrac{a}{c}, \\qquad \\lim_{x \\to -\\infty} f(x) = \\dfrac{a}{c}\\]</div>
+                <p style="margin: 4px 0; color: var(--text-muted); font-size: 12.5px;"><em>(Có thể sử dụng nhanh $y = \\dfrac{a}{c}$ cho hàm phân thức bậc nhất trên bậc nhất để tìm tiệm cận ngang).</em></p>
+                <p style="margin: 4px 0;">$\\implies$ Kết luận đường thẳng $y = \\dfrac{a}{c}$ là <strong>đường tiệm cận ngang</strong> của đồ thị hàm số.</p>
+              </li>
             </ol>
-            <p class="summary-procedure-example"><strong>Mẫu trình bày:</strong> “Giải \\(cx+d=0\\) được \\(x=...\\); tử số tại đó khác 0 nên ... . Mặt khác, \\(\\lim_{x\\to\\pm\\infty}f(x)=...\\), vậy ... .”</p>
-            <p class="summary-procedure-example"><strong>Mẫu khác:</strong> Bạn có thể sử dụng Lim theo lý thuyết để tính toán và trình bày tương tự.</p>
+            <div class="summary-procedure-example" style="margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle); background: var(--bg-surface-elevated);">
+              <strong>📝 Mẫu trình bày chuẩn bài thi SGK Toán 12:</strong>
+              <div style="font-style: normal; margin-top: 6px; line-height: 1.65; font-size: 13px;">
+                • <strong>Tập xác định:</strong> $D = \\mathbb{R} \\setminus \\left\\{-\\dfrac{d}{c}\\right\\}$.<br>
+                • Ta có: $\\lim\\limits_{x \\to \\left(-\\frac{d}{c}\\right)^+} f(x) = +\\infty$ (hoặc $-\\infty$) $\\implies$ Đường thẳng $x = -\\dfrac{d}{c}$ là đường tiệm cận đứng của đồ thị hàm số.<br>
+                • Lại có: $\\lim\\limits_{x \\to +\\infty} f(x) = \\dfrac{a}{c}$ và $\\lim\\limits_{x \\to -\\infty} f(x) = \\dfrac{a}{c}$ $\\implies$ Đường thẳng $y = \\dfrac{a}{c}$ là đường tiệm cận ngang của đồ thị hàm số.
+              </div>
+            </div>
           </section>
 
           <details class="formula-highlight-box" style="margin:14px 0;">
@@ -3234,34 +3346,75 @@
         </form>
         ${hasResults ? `
         <section class="sandbox-results-card">
-          <h3>KẾT QUẢ KHẢO SÁT</h3>
-          <p class="sandbox-function-display">${fOfX}</p>
-          <div class="sandbox-derivative"><strong>Đạo hàm:</strong> ${derivativeText}</div>
-          ${surveyDetails ? `<p class="sandbox-domain-line"><strong>Tập xác định:</strong> \\(${surveyDetails.domain}\\).</p>` : ''}
-          <h3 class="sandbox-variation-title">BẢNG BIẾN THIÊN</h3>
-          <div class="variation-table-scroll">${variationHtml}</div>
-          ${surveyDetails ? `
-          <div class="sandbox-survey-card" style="margin-top:16px; padding:14px; border:1px solid var(--border-subtle); border-radius:var(--radius-md); background:var(--bg-card);">
-            <h4 style="margin:0 0 10px; color:var(--text-primary); font-size:13px; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
-              <span>📋</span> KẾT LUẬN KHẢO SÁT HÀM SỐ
-            </h4>
-            <div style="font-size:13px; line-height:1.5;">
-              <h4>Tìm ba loại tiệm cận theo lý thuyết</h4>
-              <div class="sandbox-calculation-steps">
-                <p><strong>1. Tiệm cận đứng:</strong> ${verticalCalculation}</p>
-                <p><strong>2. Tiệm cận ngang:</strong> ${horizontalCalculation}</p>
-                <p><strong>3. Tiệm cận xiên:</strong> ${obliqueCalculation}</p>
+          ${surveyDetails ? (() => {
+            const xva_latex = this.formatFractionLatex(-rf.d, rf.c);
+            const yha_latex = this.formatFractionLatex(rf.a, rf.c);
+            const rightLimitStr = determinant < 0 ? '+\\infty' : '-\\infty';
+            const leftLimitStr = determinant < 0 ? '-\\infty' : '+\\infty';
+            const bbtSvg = this.generateBbtSvg(rf);
+            const oyText = rf.d !== 0
+              ? `Giao điểm của đồ thị hàm số với trục tung là điểm \\(\\left(0;\\, ${this.formatFractionLatex(rf.b, rf.d)}\\right)\\).`
+              : 'Trục tung chính là đường tiệm cận đứng \\(x = 0\\) nên đồ thị không cắt trục tung.';
+            const oxText = rf.a !== 0
+              ? `Giao điểm của đồ thị hàm số với trục hoành là điểm \\(\\left(${this.formatFractionLatex(-rf.b, rf.a)};\\, 0\\right)\\).`
+              : 'Trục hoành chính là đường tiệm cận ngang \\(y = 0\\) nên đồ thị không cắt trục hoành.';
+            const symmetryText = `Đồ thị hàm số nhận giao điểm \\(I\\left(${xva_latex};\\, ${yha_latex}\\right)\\) của hai đường tiệm cận làm tâm đối xứng và nhận hai đường phân giác của các góc tạo bởi hai đường tiệm cận này làm trục đối xứng.`;
+
+            return `
+              <h3 style="margin: 0 0 10px; font-size: 15px; color: var(--primary);">KẾT QUẢ KHẢO SÁT HÀM SỐ (CHUẨN SGK TOÁN 12)</h3>
+              <div class="sandbox-function-display" style="margin: 8px 0 14px; font-size: 17px; text-align: center;">
+                \\[f(x) = \\dfrac{${linear(rf.a, rf.b)}}{${linear(rf.c, rf.d)}}\\]
               </div>
 
-              <h4>Tâm đối xứng</h4>
-              <p>\\(${surveyDetails.centerI}\\).</p>
+              <div style="margin-bottom: 14px; line-height: 1.65; font-size: 13.5px;">
+                <p style="margin: 4px 0;"><strong>1. Tập xác định:</strong> \\(D = \\mathbb{R} \\setminus \\left\\{${xva_latex}\\right\\}\\).</p>
+                <p style="margin: 8px 0 4px;"><strong>2. Đạo hàm và sự biến thiên:</strong></p>
+                <div class="math-proof-equation" style="margin: 6px 0;">
+                  \\[y' = f'(x) = \\dfrac{${fmt(determinant)}}{\\left(${linear(rf.c, rf.d)}\\right)^2}\\]
+                </div>
+                <p style="margin: 4px 0;">• Vì \\(ad - bc = ${fmt(determinant)} ${determinant > 0 ? '> 0' : '< 0'}\\) nên \\(y' ${determinant > 0 ? '> 0' : '< 0'}, \\; \\forall x \\ne ${xva_latex}\\).</p>
+                <p style="margin: 4px 0;">• Hàm số <strong>${determinant > 0 ? 'đồng biến' : 'nghịch biến'}</strong> trên từng khoảng \\((-\\infty;\\, ${xva_latex})\\) và \\((${xva_latex};\\, +\\infty)\\).</p>
+                <p style="margin: 4px 0;">• Hàm số không có cực trị.</p>
+              </div>
 
-              <h4>Kết luận từ bảng biến thiên</h4>
-              <p>${surveyDetails.monoText}</p>
-              <p>${surveyDetails.extremaText}</p>
-            </div>
-          </div>
-          ` : `
+              <div style="margin-bottom: 14px; line-height: 1.65; font-size: 13.5px;">
+                <p style="margin: 4px 0 6px;"><strong>3. Các đường tiệm cận:</strong></p>
+                <p style="margin: 4px 0;">• <strong>Tiệm cận đứng:</strong></p>
+                <div class="math-proof-equation" style="margin: 6px 0;">
+                  \\[\\lim_{x \\to \\left(${xva_latex}\\right)^+} f(x) = ${rightLimitStr} \\quad\\text{và}\\quad \\lim_{x \\to \\left(${xva_latex}\\right)^-} f(x) = ${leftLimitStr}\\]
+                </div>
+                <p style="margin: 4px 0;">\\(x = ${xva_latex}\\) là <strong>đường tiệm cận đứng</strong> của đồ thị hàm số.</p>
+
+                <p style="margin: 10px 0 4px;">• <strong>Tiệm cận ngang:</strong></p>
+                <div class="math-proof-equation" style="margin: 6px 0;">
+                  \\[\\lim_{x \\to +\\infty} f(x) = \\lim_{x \\to +\\infty} \\dfrac{a + \\frac{b}{x}}{c + \\frac{d}{x}} = ${yha_latex}, \\qquad \\lim_{x \\to -\\infty} f(x) = ${yha_latex}\\]
+                </div>
+                <p style="margin: 4px 0;">\\(y = ${yha_latex}\\) là <strong>đường tiệm cận ngang</strong> của đồ thị hàm số.</p>
+
+                <p style="margin: 10px 0 4px;">• <strong>Tiệm cận xiên:</strong> Do bậc tử bằng bậc mẫu (bậc 1), hàm số <strong>không có tiệm cận xiên</strong>.</p>
+              </div>
+
+              <div style="margin-bottom: 14px;">
+                <p style="margin: 6px 0 6px; font-weight: bold; font-size: 13.5px;">4. Bảng biến thiên:</p>
+                ${bbtSvg}
+              </div>
+
+              <div style="margin: 14px 0 10px; line-height: 1.7; font-size: 13.5px;">
+                <p style="margin: 4px 0;">• ${oyText}</p>
+                <p style="margin: 4px 0;">• ${oxText}</p>
+                <p style="margin: 4px 0;">• ${symmetryText}</p>
+              </div>
+
+              <p style="margin: 14px 0 6px; font-style: italic; color: var(--text-muted); text-align: center; font-size: 13px;">
+                (Đồ thị được trình bày bên trên)
+              </p>
+            `;
+          })() : `
+          <h3 style="margin: 0 0 10px; font-size: 14px; color: var(--primary);">KẾT QUẢ KHẢO SÁT</h3>
+          <p class="sandbox-function-display">${fOfX}</p>
+          <div class="sandbox-derivative"><strong>Đạo hàm:</strong> ${derivativeText}</div>
+          <h3 class="sandbox-variation-title" style="margin-top:10px;">BẢNG BIẾN THIÊN</h3>
+          <div class="variation-table-scroll">${variationHtml}</div>
           <section class="sandbox-special-case" style="margin-top:16px;">
             <h4>Trường hợp của hàm số</h4>
             <strong>${specialCaseTitle}</strong>
