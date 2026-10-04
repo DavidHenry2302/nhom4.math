@@ -277,12 +277,12 @@
       let allQuestionsValid = true;
       reviewSets.forEach((lvl, lvlIdx) => {
         lvl.questions.forEach((q, qIdx) => {
-          if (!q.prompt || !Array.isArray(q.options) || q.options.length < 3 || q.answer < 0 || q.answer >= q.options.length || !q.explain) {
+          if (!q.prompt || !Array.isArray(q.options) || q.options.length !== 4 || q.answer < 0 || q.answer >= q.options.length || !q.explain) {
             allQuestionsValid = false;
           }
         });
       });
-      assert('Tất cả câu hỏi ôn tập có đầy đủ lựa chọn, chỉ mục đáp án đúng hợp lệ và lời giải chi tiết', allQuestionsValid);
+      assert('Tất cả câu hỏi ôn tập có đúng 4 lựa chọn (A, B, C, D), chỉ mục đáp án đúng hợp lệ và lời giải chi tiết', allQuestionsValid);
     });
 
     // =========================================================================

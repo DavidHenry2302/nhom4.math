@@ -310,6 +310,13 @@
     box-shadow: 0 6px 20px color-mix(in srgb, var(--primary) 35%, transparent) !important;
   }
 
+  .sandbox-coefficient-form button {
+    font-size: 12.5px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap !important;
+    min-height: unset !important;
+  }
+
   /* 5. GIAO DIỆN ÔN TẬP (REVIEW GAME & COMPANION CARD) TRÊN PC */
   .lab-workbench-grid.review-mode {
     display: block !important;
